@@ -1,0 +1,103 @@
+<script setup lang="ts">
+
+import { RouterView } from 'vue-router';
+import TheNavBar from './components/TheNavBar.vue';
+
+</script>
+
+<template>
+  <TheNavBar />
+  <main>
+    <RouterView />
+  </main>
+</template>
+
+<style>
+/* Global styles */
+
+* {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+
+  /* Resets */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  font-weight: normal;
+
+  /* Font sizes */
+  --font-size-web-smaller: 14px;
+  --font-size-web-small: 16px;
+  --font-size-web-regular: 18px;
+  --font-size-web-large: 22px;
+  --font-size-web-larger: 26px;
+  --font-size-web-largest: 32px;
+  --font-size-mobile-smaller: 11px;
+  --font-size-mobile-small: 12px;
+  --font-size-mobile-regular: 14px;
+  --font-size-mobile-large: 16px;
+  --font-size-mobile-larger: 20px;
+  --font-size-mobile-largest: 26px;
+
+  --font-size-smaller: var(--font-size-web-smaller);
+  --font-size-small: var(--font-size-web-small);
+  --font-size-regular: var(--font-size-web-regular);
+  --font-size-large: var(--font-size-web-large);
+  --font-size-larger: var(--font-size-web-larger);
+  --font-size-largest: var(--font-size-web-largest);
+
+  /* Color palette */
+  --color-primary-base: #FF5656;
+  --color-primary-light: #ffaaaa;
+  --color-grey-white: #FFFFFF;
+  --color-grey-offwhite: #F5F5F5;
+  --color-grey-light: #D3D3D3;
+  --color-grey-base: #757575;
+  --color-grey-dark: #505050;
+  --color-grey-black: #000000;
+
+  /* Box shadows */
+  --box-shadow-standard: 2px 2px 4px 1px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 3px 3px 6px 1px rgba(0, 0, 0, 0.05);
+
+  /* Scrollbar styling for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-grey-light) var(--color-grey-offwhite);
+}
+
+/* Scrollbar styling for Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--color-grey-offwhite);
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-grey-light);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-grey-base);
+}
+
+p {
+  font-size: var(--font-size-regular);
+}
+
+/* Media queries*/
+
+@media (max-width: 600px) {
+  * {
+    --font-size-smaller: var(--font-size-mobile-smaller);
+    --font-size-small: var(--font-size-mobile-small);
+    --font-size-regular: var(--font-size-mobile-regular);
+    --font-size-large: var(--font-size-mobile-large);
+    --font-size-larger: var(--font-size-mobile-larger);
+    --font-size-largest: var(--font-size-mobile-largest);
+  }
+}
+</style>
