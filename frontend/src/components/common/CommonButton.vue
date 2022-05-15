@@ -26,13 +26,14 @@ const router = useRouter();
   border-radius: 5px;
   background-color: var(--color-primary-dark);
   border: 2px solid transparent;
+  font-size: var(--font-size-regular);
   transition:
     background-color 100ms ease-out,
     border-color 100ms ease-out;
 }
 .text {
   font-weight: bold;
-  font-size: var(--font-size-regular);
+  font-size: inherit;
   color: var(--color-grey-white);
   transition: color 100ms ease-out;
   white-space: nowrap;
