@@ -1,13 +1,6 @@
 <script setup lang="ts">
 
-import { RouterView, useRouter } from 'vue-router';
-import useRootStore from '@/store/useRootStore';
-
-const store = useRootStore();
-
-const router = useRouter();
-
-if (store.value.loggedInUser) router.push('/chat');
+import { RouterView } from 'vue-router';
 
 </script>
 
