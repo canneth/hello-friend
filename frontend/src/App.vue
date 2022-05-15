@@ -5,8 +5,52 @@ import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <RouterView />
+  <RouterView v-slot="{ Component, route }">
+    <Transition
+      :enter-from-class="$style.pageEnterFrom"
+      :enter-active-class="$style.pageEnterActive"
+      :enter-to-class="$style.pageEnterTo"
+      :leave-from-class="$style.pageLeaveFrom"
+      :leave-active-class="$style.pageLeaveActive"
+      :leave-to-class="$style.pageLeaveTo">
+      <component :is="Component" :key="route.path" />
+    </Transition>
+  </RouterView>
 </template>
+
+<style module>
+.pageEnterActive {
+  position: absolute !important;
+  animation: page-enter 300ms ease-out;
+}
+.pageLeaveActive {
+  position: absolute !important;
+  animation: page-exit 300ms ease-out;
+}
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes page-exit {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+</style>
 
 <style>
 /* Global styles */
