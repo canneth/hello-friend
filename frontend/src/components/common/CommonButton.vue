@@ -4,23 +4,15 @@ import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   text: string;
-  url: string;
   noBackground?: boolean;
 }>()
 
 const router = useRouter();
 
-function clickHandler(e: MouseEvent) {
-  e.preventDefault();
-  router.push(props.url);
-}
-
 </script>
 
 <template>
-  <button
-    :class="`${$style.overallContainer} ${noBackground ? $style.noBackground : null}`"
-    @click="clickHandler">
+  <button :class="`${$style.overallContainer} ${noBackground ? $style.noBackground : null}`">
     <p :class="$style.text">{{ text }}</p>
   </button>
 </template>

@@ -1,11 +1,22 @@
 <script setup lang="ts">
 
+import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
+import SvgLogo from '@/components/svg/SvgLogo.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
 import useRootStore from '@/composables/useRootStore';
-import SvgLogo from '../components/svg/SvgLogo.vue';
-import CommonButton from '../components/common/CommonButton.vue';
 
 const store = useRootStore();
+const router = useRouter();
+
+function clickHandlerChatButton(e: MouseEvent) {
+  e.preventDefault();
+  router.push('/chat');
+}
+function clickHandlerAboutButton(e: MouseEvent) {
+  e.preventDefault();
+  router.push('/about');
+}
 
 </script>
 
@@ -23,8 +34,8 @@ const store = useRootStore();
             <h1>HelloFriend!</h1>
           </div>
           <menu :class="$style.buttonBar">
-            <CommonButton text="Get Chatting!" url="/chat" />
-            <CommonButton text="About" noBackground url="/about" />
+            <CommonButton text="Get Chatting!" @click="clickHandlerChatButton" />
+            <CommonButton text="About" noBackground @click="clickHandlerAboutButton" />
           </menu>
         </div>
       </div>
