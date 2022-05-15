@@ -52,19 +52,23 @@ function clickHandlerLogOut(e: MouseEvent) {
       @click="clickHandlerHomeButton">
       <SvgLogo :class="$style.logoSvg" />
     </button>
-    <menu v-if="store.loggedInUser" :class="$style.loggedInOptionsContainer">
-      <CommonButton :class="$style.logOutButton" text="Log Out" noBackground @click="clickHandlerLogOut" />
-      <TheNavBarProfileButton
-        v-if="store.loggedInUser"
-        :class="$style.profileButton"
-        :displayName="displayName!"
-        :avatarSrc="store.loggedInUser.avatarSrc"
-        @click="clickHandlerProfileButton" />
-    </menu>
-    <menu v-else :class="$style.notLoggedInOptionsContainer">
-      <CommonButton text="Log In" noBackground @click="clickHandlerLoginButton" />
-      <CommonButton text="Sign Up" @click="clickHandlerSignupButton" />
-    </menu>
+    <Transition
+      :enter-active-class="$style.optionsContainerEnterActive"
+      :leave-active-class="$style.optionsContainerLeaveActive">
+      <menu v-if="store.loggedInUser" :class="$style.loggedInOptionsContainer">
+        <CommonButton :class="$style.logOutButton" text="Log Out" noBackground @click="clickHandlerLogOut" />
+        <TheNavBarProfileButton
+          v-if="store.loggedInUser"
+          :class="$style.profileButton"
+          :displayName="displayName!"
+          :avatarSrc="store.loggedInUser.avatarSrc"
+          @click="clickHandlerProfileButton" />
+      </menu>
+      <menu v-else :class="$style.notLoggedInOptionsContainer">
+        <CommonButton text="Log In" noBackground @click="clickHandlerLoginButton" />
+        <CommonButton text="Sign Up" @click="clickHandlerSignupButton" />
+      </menu>
+    </Transition>
   </div>
 </template>
 
@@ -109,6 +113,38 @@ function clickHandlerLogOut(e: MouseEvent) {
 .logoSvg {
   height: 80%;
   width: auto;
+}
+
+.optionsContainerEnterActive {
+  position: absolute !important;
+  animation: fade-in 200ms ease-out;
+}
+.optionsContainerLeaveActive {
+  position: absolute !important;
+  animation: fade-out 200ms ease-out;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @media (hover: hover) {
