@@ -54,8 +54,9 @@ if (store.value.loggedInUser) router.push('/chat');
   --font-size-largest: var(--font-size-web-largest);
 
   /* Color palette */
-  --color-primary-base: #FF5656;
-  --color-primary-light: #ffaaaa;
+  --color-primary-dark: #ff7300;
+  --color-primary-base: #ffbc57;
+  --color-primary-light: #FFDAA4;
   --color-grey-white: #FFFFFF;
   --color-grey-offwhite: #F5F5F5;
   --color-grey-light: #D3D3D3;
