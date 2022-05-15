@@ -1,6 +1,6 @@
 
 import { createGlobalObservable, useLocalObservable } from 'mobx-vue-lite'
-import rootStore from './rootStore';
+import rootStore from '@/store/rootStore';
 
 const useRootStore = createGlobalObservable(() => {
   return useLocalObservable(() => rootStore)

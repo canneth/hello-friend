@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import useRootStore from '@/store/useRootStore';
+import useRootStore from '@/composables/useRootStore';
 
 const router = useRouter();
 const store = useRootStore();

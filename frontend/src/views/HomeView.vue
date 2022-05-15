@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import TheNavBar from '@/components/TheNavBar.vue';
-import useRootStore from '@/store/useRootStore';
+import useRootStore from '@/composables/useRootStore';
 import SvgLogo from '../components/svg/SvgLogo.vue';
 import CommonButton from '../components/common/CommonButton.vue';
 
