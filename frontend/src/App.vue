@@ -87,6 +87,10 @@ p {
 button {
   background: none;
 }
+menu {
+  list-style-type: none;
+  padding-inline-start: 0px;
+}
 
 /* Media queries*/
 
