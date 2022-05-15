@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useStore } from '@/store';
 
-const store = useStore();
+import useRootStore from '@/store/useRootStore';
+
+const store = useRootStore();
 
 </script>
 
