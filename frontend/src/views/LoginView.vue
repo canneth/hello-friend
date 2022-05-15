@@ -1,15 +1,19 @@
 <script setup lang="ts">
 
+import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
 import useRootStore from '@/composables/useRootStore';
 import mockUser from '@/mocks/mockUser';
 
 const store = useRootStore();
+const router = useRouter();
 
 function clickHandlerLogInButton(e: MouseEvent) {
   e.preventDefault();
   store.value.setLoggedInUser(mockUser);
+  // TODO: Call backend to log user in.
+  router.back();
 }
 
 </script>
