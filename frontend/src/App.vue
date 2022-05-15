@@ -94,6 +94,7 @@ import { RouterView } from 'vue-router';
   --color-primary-dark: #ff7300;
   --color-primary-base: #ffbc57;
   --color-primary-light: #FFDAA4;
+  --color-primary-lighter: #ffedd2;
   --color-grey-white: #FFFFFF;
   --color-grey-offwhite: #F5F5F5;
   --color-grey-light: #D3D3D3;
@@ -125,7 +126,8 @@ import { RouterView } from 'vue-router';
   background-color: var(--color-grey-base);
 }
 
-p {
+p,
+input {
   font-size: var(--font-size-regular);
 }
 button {
