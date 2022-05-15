@@ -84,6 +84,9 @@ import { RouterView } from 'vue-router';
 p {
   font-size: var(--font-size-regular);
 }
+button {
+  background: none;
+}
 
 /* Media queries*/
 
