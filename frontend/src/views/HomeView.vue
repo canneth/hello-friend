@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import TheNavBar from '@/components/TheNavBar.vue';
 import useRootStore from '@/store/useRootStore';
 
 const store = useRootStore();
@@ -8,12 +9,17 @@ const store = useRootStore();
 
 <template>
   <div class="overall-container">
-    <p>I am the HomeView!</p>
+    <header>
+      <TheNavBar />
+    </header>
+    <main class="page-content-container">
+      <p>I am the HomeView!</p>
+    </main>
   </div>
 </template>
 
 <style scoped>
-.overall-container {
+.page-content-container {
   position: relative;
   display: grid;
   place-items: center;

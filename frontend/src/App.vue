@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { RouterView, useRouter } from 'vue-router';
-import TheNavBar from '@/components/TheNavBar.vue';
 import useRootStore from '@/store/useRootStore';
 
 const store = useRootStore();
@@ -13,10 +12,7 @@ if (store.value.loggedInUser) router.push('/chat');
 </script>
 
 <template>
-  <TheNavBar />
-  <main>
-    <RouterView />
-  </main>
+  <RouterView />
 </template>
 
 <style>
