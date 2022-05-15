@@ -19,14 +19,14 @@ function clickHandler(e: MouseEvent) {
 
 <template>
   <button
-    :class="`overall-container ${noBackground ? 'no-background' : null}`"
+    :class="`${$style.overallContainer} ${noBackground ? $style.noBackground : null}`"
     @click="clickHandler">
-    <p class="text">{{ text }}</p>
+    <p :class="$style.text">{{ text }}</p>
   </button>
 </template>
 
-<style scoped>
-.overall-container {
+<style module>
+.overallContainer {
   position: relative;
   display: grid;
   place-items: center;
@@ -43,21 +43,22 @@ function clickHandler(e: MouseEvent) {
   font-size: var(--font-size-regular);
   color: var(--color-grey-white);
   transition: color 100ms ease-out;
+  white-space: nowrap;
 }
 
-.overall-container.no-background {
+.overallContainer.noBackground {
   background-color: var(--color-grey-white);
 }
-.overall-container.no-background > .text {
+.overallContainer.noBackground > .text {
   color: var(--color-primary-dark);
 }
 
-.overall-container:hover {
+.overallContainer:hover {
   cursor: pointer;
   background-color: white;
   border-color: var(--color-grey-black);
 }
-.overall-container:hover > .text {
+.overallContainer:hover > .text {
   color: var(--color-grey-black);
 }
 </style>

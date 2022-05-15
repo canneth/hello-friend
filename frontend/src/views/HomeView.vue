@@ -10,19 +10,19 @@ const store = useRootStore();
 </script>
 
 <template>
-  <div class="overall-container">
+  <div :class="$style.overallContainer">
     <header>
-      <TheNavBar />
+      <TheNavBar :class="$style.navBar" />
     </header>
-    <main class="page-content-container">
-      <div class="hero-container">
-        <SvgLogo class="logo-svg" />
-        <div class="hero-content-container">
-          <div class="hero-title-container">
+    <main :class="$style.pageContentContainer">
+      <div :class="$style.heroContainer">
+        <SvgLogo :class="$style.logoSvg" />
+        <div :class="$style.heroContentContainer">
+          <div :class="$style.heroTitleContainer">
             <h2>Welcome to</h2>
             <h1>HelloFriend!</h1>
           </div>
-          <menu class="button-bar">
+          <menu :class="$style.buttonBar">
             <CommonButton text="Get Chatting!" url="/chat" />
             <CommonButton text="About" noBackground url="/about" />
           </menu>
@@ -32,42 +32,50 @@ const store = useRootStore();
   </div>
 </template>
 
-<style scoped>
-.page-content-container {
+<style module>
+.overallContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.navBar {
+  z-index: 1;
+}
+.pageContentContainer {
   position: relative;
   display: grid;
   place-items: center;
   width: 100%;
   height: 100vh;
 }
-.hero-container {
+.heroContainer {
   position: relative;
   display: flex;
   align-items: center;
   gap: 20px;
 }
-.logo-svg {
+.logoSvg {
   width: clamp(220px, 40vw, 500px);
   height: auto;
 }
-.hero-content-container {
+.heroContentContainer {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-.hero-title-container {
+.heroTitleContainer {
   position: relative;
   display: flex;
   flex-direction: column;
 }
-.hero-title-container > h2 {
+.heroTitleContainer > h2 {
   font-size: clamp(20px, 3vw, 40px);
 }
-.hero-title-container > h1 {
+.heroTitleContainer > h1 {
   font-size: clamp(50px, 8vw, 100px);
 }
-.button-bar {
+.buttonBar {
   position: relative;
   display: flex;
   align-items: center;
@@ -75,13 +83,13 @@ const store = useRootStore();
 }
 
 @media (max-width: 800px) {
-  .hero-container {
+  .heroContainer {
     flex-direction: column;
   }
-  .hero-title-container {
+  .heroTitleContainer {
     align-items: center;
   }
-  .button-bar {
+  .buttonBar {
     justify-content: center;
   }
 }

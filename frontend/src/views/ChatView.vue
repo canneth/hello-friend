@@ -11,13 +11,13 @@ if (!store.value.loggedInUser) router.push('/login');
 </script>
 
 <template>
-  <div class="overall-container">
+  <div :class="$style.overallContainer">
     <p>I am the ChatView!</p>
   </div>
 </template>
 
-<style scoped>
-.overall-container {
+<style module>
+.overallContainer {
   position: relative;
   display: grid;
   place-items: center;
