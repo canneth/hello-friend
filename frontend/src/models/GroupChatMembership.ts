@@ -1,6 +1,6 @@
 
 import type User from '@/models/User';
-import GroupChat from '@/models/GroupChat';
+import type GroupChat from '@/models/GroupChat';
 
 export default interface GroupChatMembership {
   // PRIMARY KEY (userId, groupChatId)
