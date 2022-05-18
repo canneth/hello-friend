@@ -2,9 +2,9 @@
 import User from '@/models//User';
 
 export default interface DirectChatMessage {
-  directChatMessageId: string;
+  directChatMessageId: string; // PRIMARY KEY
   dtmPosted: string; // Expected to be in ISO format.
   content: string;
-  senderUserId: User['userId'];
-  receiverUserId: User['userId'];
+  senderUserId: User['userId']; // FOREIGN KEY
+  receiverUserId: User['userId']; // FOREIGN KEY
 }
