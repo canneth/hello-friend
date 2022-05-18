@@ -3,15 +3,15 @@
 import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
-import useRootStore from '@/composables/useRootStore';
+import useUserStore from '@/composables/useUserStore';
 import mockUser from '@/mocks/mockUser';
 
-const store = useRootStore();
+const store = useUserStore();
 const router = useRouter();
 
 function clickHandlerLogInButton(e: MouseEvent) {
   e.preventDefault();
-  store.value.setLoggedInUser(mockUser);
+  store.value.setUser(mockUser);
   // TODO: Call backend to log user in.
   router.back();
 }

@@ -4,16 +4,16 @@ import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CommonButton from '@/components/common/CommonButton.vue';
 import TheNavBarProfileButton from '@/components/TheNavBarProfileButton.vue';
-import useRootStore from '@/composables/useRootStore';
+import useUserStore from '@/composables/useUserStore';
 import SvgLogo from '@/components/svg/SvgLogo.vue';
 
-const store = useRootStore();
+const store = useUserStore();
 const router = useRouter();
 const route = useRoute();
 
 const displayName = computed(() => {
   // Grab just the first word in the name.
-  return store.value.loggedInUser?.name.split(' ')[0];
+  return store.value.user?.name.split(' ')[0];
 });
 
 function clickHandlerLoginButton(e: MouseEvent) {
@@ -38,7 +38,7 @@ function clickHandlerProfileButton(e: MouseEvent) {
 
 function clickHandlerLogOut(e: MouseEvent) {
   e.preventDefault();
-  store.value.setLoggedInUser(null);
+  store.value.setUser(null);
   // TODO: Send call to backend to log user out.
 }
 
@@ -55,13 +55,13 @@ function clickHandlerLogOut(e: MouseEvent) {
     <Transition
       :enter-active-class="$style.optionsContainerEnterActive"
       :leave-active-class="$style.optionsContainerLeaveActive">
-      <menu v-if="store.loggedInUser" :class="$style.loggedInOptionsContainer">
+      <menu v-if="store.user" :class="$style.loggedInOptionsContainer">
         <CommonButton :class="$style.logOutButton" text="Log Out" noBackground @click="clickHandlerLogOut" />
         <TheNavBarProfileButton
-          v-if="store.loggedInUser"
+          v-if="store.user"
           :class="$style.profileButton"
           :displayName="displayName!"
-          :avatarSrc="store.loggedInUser.avatarSrc"
+          :avatarSrc="store.user.avatarSrc"
           @click="clickHandlerProfileButton" />
       </menu>
       <menu v-else :class="$style.notLoggedInOptionsContainer">

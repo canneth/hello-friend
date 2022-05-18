@@ -2,15 +2,15 @@
 
 import { computed } from 'vue';
 import CommonSearchBar from '@/components/common/CommonSearchBar.vue';
-import useRootStore from '@/composables/useRootStore';
+import useUserStore from '@/composables/useUserStore';
 import mockUser from '@/mocks/mockUser';
 
-const store = useRootStore();
+const store = useUserStore();
 
-store.value.setLoggedInUser(mockUser);
+store.value.setUser(mockUser);
 
 const displayName = computed(() => {
-  return store.value.loggedInUser?.name.split(' ')[0];
+  return store.value.user?.name.split(' ')[0];
 });
 
 </script>
@@ -22,7 +22,7 @@ const displayName = computed(() => {
         <div :class="$style.avatarContainer">
           <img
             :class="$style.avatarImg"
-            :src="store.loggedInUser?.avatarSrc ?? 'placeholder-avatar.png'" />
+            :src="store.user?.avatarSrc ?? 'placeholder-avatar.png'" />
         </div>
         <p :class="$style.displayName">
           {{ displayName }}

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import useRootStore from '@/composables/useRootStore';
+import useUserStore from '@/composables/useUserStore';
 import TheChatViewSideBar from '@/components/TheChatViewSideBar.vue';
 
 const router = useRouter();
-const store = useRootStore();
+const store = useUserStore();
 
-// if (!store.value.loggedInUser) router.push('/login');
+// if (!store.value.user) router.push('/login');
 
 </script>
 
