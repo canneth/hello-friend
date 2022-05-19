@@ -7,7 +7,7 @@ CREATE TABLE "GroupChatMembership" (
   "userId" UUID NOT NULL,
   "groupChatId" UUID NOT NULL,
   "groupChatMembershipId" UUID NOT NULL UNIQUE,
-  "dtmJoined" TIMESTAMPTZ NOT NULL,
+  "dtmJoined" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY ("userId", "groupChatId"),
   CONSTRAINT User_ParticipatesIn_GroupChatMembership_fk FOREIGN KEY ("userId") REFERENCES "User"("userId"),
   CONSTRAINT GroupChat_IsJoinedThrough_GroupChatMembership_fk FOREIGN KEY ("groupChatId") REFERENCES "GroupChat"("groupChatId")

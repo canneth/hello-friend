@@ -8,7 +8,7 @@ CREATE TABLE "ContactListing" (
   "contactUserId" UUID NOT NULL,
   "contactListingId" UUID NOT NULL UNIQUE,
   "contactName" VARCHAR(50) NOT NULL,
-  "dtmAdded" TIMESTAMPTZ NOT NULL,
+  "dtmAdded" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY ("ownerUserId", "contactUserId"),
   CONSTRAINT User_Adds_ContactListing_fk FOREIGN KEY ("ownerUserId") REFERENCES "User"("userId"),
   CONSTRAINT User_IsAddedIn_ContactListing_fk FOREIGN KEY ("contactUserId") REFERENCES "User"("userId")

@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS "DirectChatMessage";
 
 CREATE TABLE "DirectChatMessage" (
   "directChatMessageId" UUID NOT NULL PRIMARY KEY,
-  "dtmPosted" TIMESTAMPTZ NOT NULL,
+  "dtmPosted" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   "content" TEXT NOT NULL,
   "senderUserId" UUID NOT NULL,
   "receiverUserId" UUID NOT NULL,

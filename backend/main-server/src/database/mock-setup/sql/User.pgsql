@@ -10,7 +10,7 @@ CREATE TABLE "User" (
   "password" VARCHAR(100) NOT NULL,
   "name" VARCHAR(50) NOT NULL,
   "avatarSrc" TEXT,
-  "dtmCreated" TIMESTAMPTZ NOT NULL
+  "dtmCreated" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 /* Populate User table */

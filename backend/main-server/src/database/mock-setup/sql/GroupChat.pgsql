@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS "GroupChat";
 CREATE TABLE "GroupChat" (
   "groupChatId" UUID NOT NULL PRIMARY KEY,
   "title" VARCHAR(50) NOT NULL,
-  "dtmCreated" TIMESTAMPTZ NOT NULL
+  "dtmCreated" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 /* Populate GroupChat table */

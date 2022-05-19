@@ -6,5 +6,5 @@ export default interface User {
   password: string;
   name: string;
   avatarSrc: string | null;
-  dtmCreated: string; // Expected to be in ISO format.
+  dtmCreated?: string; // DEFAULT CURRENT_TIMESTAMP
 }

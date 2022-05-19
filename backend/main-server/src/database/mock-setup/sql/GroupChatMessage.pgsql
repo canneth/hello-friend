@@ -7,7 +7,7 @@ CREATE TABLE "GroupChatMessage" (
   "groupChatMessageId" UUID NOT NULL PRIMARY KEY,
   "userId" UUID NOT NULL,
   "groupChatId" UUID NOT NULL,
-  "dtmPosted" TIMESTAMPTZ NOT NULL,
+  "dtmPosted" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   "content" TEXT NOT NULL,
   CONSTRAINT GroupChatMembership_PermitsToPost_GroupChatMessage FOREIGN KEY ("userId", "groupChatId") REFERENCES "GroupChatMembership"("userId", "groupChatId")
 );
