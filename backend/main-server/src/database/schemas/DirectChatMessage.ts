@@ -1,5 +1,5 @@
 
-import User from '@src/models//User';
+import User from '@root/src/database/schemas/User';
 
 export default interface DirectChatMessage {
   directChatMessageId: string; // PRIMARY KEY

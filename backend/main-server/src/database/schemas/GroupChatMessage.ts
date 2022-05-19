@@ -1,6 +1,6 @@
 
-import type User from '@src/models/User';
-import GroupChat from '@src/models/GroupChat';
+import type User from '@root/src/database/schemas/User';
+import GroupChat from '@root/src/database/schemas/GroupChat';
 
 export default interface GroupChatMessage {
   groupChatMessageId: string; // PRIMARY KEY
