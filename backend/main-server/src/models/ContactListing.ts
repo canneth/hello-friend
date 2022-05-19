@@ -1,5 +1,5 @@
 
-import type User from '@/models/User';
+import type User from '@src/models/User';
 
 export default interface ContactListing {
   // PRIMARY KEY (ownerUserId, contactUserId)
