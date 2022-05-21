@@ -130,10 +130,36 @@ body {
   background-color: var(--color-background);
 }
 
-p,
-input {
+p {
+  color: var(--color-body);
   font-size: var(--font-size-regular);
 }
+label {
+  color: var(--color-body);
+  font-size: var(--font-size-small);
+  opacity: 0.5;
+}
+input {
+  color: var(--color-body);
+  font-size: var(--font-size-regular);
+}
+a {
+  position: relative;
+  color: var(--color-secondary-base);
+  text-decoration: none;
+  transition: color 100ms ease-out;
+}
+a::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: 0px;
+  background: var(--color-primary-base);
+  transform: scaleX(0);
+  transition: transform 100ms ease-out;
+}
+
 button {
   background: none;
 }
@@ -144,6 +170,14 @@ menu {
 
 /* Media queries*/
 
+@media (hover: hover) {
+  a:hover {
+    color: var(--color-primary-base);
+  }
+  a:hover::before {
+    transform: scaleX(1);
+  }
+}
 @media (max-width: 600px) {
   * {
     --font-size-smaller: var(--font-size-mobile-smaller);
