@@ -1,10 +1,23 @@
 
 import type User from '@/schemas/User';
 
-const userStore = {
-  user: null as User | null,
+export type LoggedInUser = (
+  Partial<User>
+  & Pick<User,
+    'userId' |
+    'email' |
+    'handle' |
+    'password' |
+    'name' |
+    'avatarSrc' |
+    'dtmCreated'
+  >
+);
 
-  setUser(user: User | null) {
+const userStore = {
+  user: null as LoggedInUser | null,
+
+  setUser(user: LoggedInUser | null) {
     this.user = user;
   }
 };
