@@ -19,12 +19,12 @@ describe('getUserById(user)', () => {
 
     /* Execute */
     const retrievedUser = await getUserById(testUser.userId!);
-    delete retrievedUser?.dtmCreated;
 
     /* Cleanup */
     await knexClient<User>('User').delete();
 
     /* Test */
+    delete retrievedUser?.dtmCreated;
     expect(retrievedUser).toEqual(testUser);
   });
   it('if the user does not exist in the database, returns null', async () => {
@@ -63,12 +63,12 @@ describe('getUserByEmail(email)', () => {
 
     /* Execute */
     const retrievedUser = await getUserByEmail(testUser.email!);
-    delete retrievedUser?.dtmCreated;
 
     /* Cleanup */
     await knexClient<User>('User').delete();
 
     /* Test */
+    delete retrievedUser?.dtmCreated;
     expect(retrievedUser).toEqual(testUser);
   });
   it('if the user does not exist in the database, returns null', async () => {
