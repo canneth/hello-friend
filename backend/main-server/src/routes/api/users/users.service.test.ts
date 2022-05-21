@@ -24,7 +24,7 @@ describe('getUserById(user)', () => {
     /* Cleanup */
     await knexClient<User>('User').delete().where(testUser);
 
-    /* Expect */
+    /* Test */
     expect(retrievedUser).toEqual(testUser);
   });
   it('if the user does not exist in the database, returns null', async () => {
@@ -42,7 +42,7 @@ describe('getUserById(user)', () => {
     /* Execute */
     const retrievedUser = await getUserById(testUser.userId!);
 
-    /* Expect */
+    /* Test */
     expect(retrievedUser).toStrictEqual(null);
   });
 });
@@ -68,7 +68,7 @@ describe('getUserByEmail(email)', () => {
     /* Cleanup */
     await knexClient<User>('User').delete('*').where(testUser);
 
-    /* Expect */
+    /* Test */
     expect(retrievedUser).toEqual(testUser);
   });
   it('if the user does not exist in the database, returns null', async () => {
@@ -86,7 +86,7 @@ describe('getUserByEmail(email)', () => {
     /* Execute */
     const retrievedUser = await getUserByEmail(testUser.email!);
 
-    /* Expect */
+    /* Test */
     expect(retrievedUser).toStrictEqual(null);
   });
 });
@@ -108,7 +108,7 @@ describe('addNewUser(user)', () => {
     const queryResult = await knexClient<User>('User').insert(testUser).returning(Object.keys(testUser));
     const insertedUser = queryResult[0];
 
-    /* Expect */
+    /* Test */
     expect(insertedUser).toEqual(testUser);
   });
 });
