@@ -56,7 +56,7 @@ function clickHandlerLogOut(e: MouseEvent) {
       :enter-active-class="$style.optionsContainerEnterActive"
       :leave-active-class="$style.optionsContainerLeaveActive">
       <menu v-if="store.user" :class="$style.loggedInOptionsContainer">
-        <CommonButton :class="$style.logOutButton" text="Log Out" noBackground @click="clickHandlerLogOut" />
+        <CommonButton :class="$style.logOutButton" type="secondary" text="Log Out" noBackground @click="clickHandlerLogOut" />
         <TheNavBarProfileButton
           v-if="store.user"
           :class="$style.profileButton"
@@ -65,8 +65,8 @@ function clickHandlerLogOut(e: MouseEvent) {
           @click="clickHandlerProfileButton" />
       </menu>
       <menu v-else :class="$style.notLoggedInOptionsContainer">
-        <CommonButton text="Log In" noBackground @click="clickHandlerLoginButton" />
-        <CommonButton text="Sign Up" @click="clickHandlerSignupButton" />
+        <CommonButton type="secondary" text="Log In" noBackground @click="clickHandlerLoginButton" />
+        <CommonButton type="primary" text="Sign Up" @click="clickHandlerSignupButton" />
       </menu>
     </Transition>
   </div>
@@ -101,8 +101,7 @@ function clickHandlerLogOut(e: MouseEvent) {
   padding: 10px;
 }
 .logOutButton {
-  padding: 5px 12px;
-  border-radius: 4px;
+  padding: 10px 20px;
   font-size: var(--font-size-small);
 }
 .homeButton {

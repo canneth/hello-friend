@@ -57,7 +57,7 @@ import { RouterView } from 'vue-router';
 
 * {
   box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Verdana', 'Open Sans', sans-serif;
 
   /* Resets */
   margin: 0;
@@ -70,9 +70,9 @@ import { RouterView } from 'vue-router';
   font-weight: normal;
 
   /* Font sizes */
-  --font-size-web-smaller: 14px;
-  --font-size-web-small: 16px;
-  --font-size-web-regular: 18px;
+  --font-size-web-smaller: 12px;
+  --font-size-web-small: 14px;
+  --font-size-web-regular: 16px;
   --font-size-web-large: 22px;
   --font-size-web-larger: 26px;
   --font-size-web-largest: 32px;
@@ -91,7 +91,7 @@ import { RouterView } from 'vue-router';
   --font-size-largest: var(--font-size-web-largest);
 
   /* Color palette */
-  --color-primary-dark: #ff7300;
+  /* --color-primary-dark: #ff7300;
   --color-primary-base: #ffbc57;
   --color-primary-light: #FFDAA4;
   --color-primary-lighter: #ffedd2;
@@ -100,11 +100,20 @@ import { RouterView } from 'vue-router';
   --color-grey-light: #D3D3D3;
   --color-grey-base: #757575;
   --color-grey-dark: #505050;
-  --color-grey-black: #000000;
+  --color-grey-black: #000000; */
+
+  --color-primary: #ff8a1c;
+  --color-status-ok: #6AE9BF;
+  --color-status-warning: #EDC84C;
+  --color-status-error: #E96A6A;
+  --color-body: #FFFFFF;
+  --color-background: #252730;
+  --color-contrast-light: #333746;
+  --color-contrast-dark: #191b1f;
 
   /* Box shadows */
-  --box-shadow-standard: 2px 2px 4px 1px rgba(0, 0, 0, 0.1);
-  --box-shadow-hover: 3px 3px 6px 1px rgba(0, 0, 0, 0.05);
+  --box-shadow-standard: 2px 2px 4px 1px rgba(0, 0, 0, 0.05);
+  --box-shadow-hover: 3px 3px 6px 1px rgba(0, 0, 0, 0.1);
 
   /* Scrollbar styling for Firefox */
   scrollbar-width: thin;
@@ -124,6 +133,10 @@ import { RouterView } from 'vue-router';
 }
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-grey-base);
+}
+
+body {
+  background-color: var(--color-background);
 }
 
 p,

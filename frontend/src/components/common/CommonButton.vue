@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   text: string;
-  noBackground?: boolean;
+  type: 'primary' | 'secondary';
 }>()
 
 const router = useRouter();
@@ -12,7 +12,7 @@ const router = useRouter();
 </script>
 
 <template>
-  <button :class="`${$style.overallContainer} ${noBackground ? $style.noBackground : null}`">
+  <button :class="`${$style.overallContainer} ${$style[props.type]}`">
     <p :class="$style.text">{{ text }}</p>
   </button>
 </template>
@@ -22,36 +22,42 @@ const router = useRouter();
   position: relative;
   display: grid;
   place-items: center;
-  padding: 10px 20px;
-  border-radius: 5px;
-  background-color: var(--color-primary-dark);
+  padding: 13px 26px;
   border: 2px solid transparent;
   font-size: var(--font-size-regular);
+  border-radius: 7px;
+  overflow: clip;
+}
+.overallContainer::before {
+  z-index: -1;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  background-color: var(--color-primary);
   transition:
     background-color 100ms ease-out,
-    border-color 100ms ease-out;
+    opacity 100ms ease-out;
 }
-.text {
-  font-weight: bold;
-  font-size: inherit;
-  color: var(--color-grey-white);
-  transition: color 100ms ease-out;
-  white-space: nowrap;
+.overallContainer.secondary::before {
+  background-color: var(--color-contrast-dark);
 }
 
-.overallContainer.noBackground {
-  background-color: var(--color-grey-white);
-}
-.overallContainer.noBackground > .text {
-  color: var(--color-primary-dark);
+.text {
+  font-size: inherit;
+  color: var(--color-body);
+  white-space: nowrap;
+  transition: color 100ms ease-out;
 }
 
 .overallContainer:hover {
   cursor: pointer;
-  background-color: white;
-  border-color: var(--color-grey-black);
 }
-.overallContainer:hover > .text {
-  color: var(--color-grey-black);
+.overallContainer:hover::before {
+  opacity: 1;
+}
+.overallContainer.secondary:hover::before {
+  background-color: var(--color-contrast-light);
 }
 </style>

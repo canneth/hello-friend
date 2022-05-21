@@ -47,6 +47,12 @@
 <style module>
 .body,
 .hand {
-  fill: var(--color-primary-light);
+  fill: var(--color-primary);
+  stroke-width: 2px;
+}
+.mouth,
+.leftEye,
+.rightEye {
+  fill-opacity: 0.6;
 }
 </style>

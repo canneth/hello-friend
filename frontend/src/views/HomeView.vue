@@ -34,8 +34,8 @@ function clickHandlerAboutButton(e: MouseEvent) {
             <h1>HelloFriend!</h1>
           </div>
           <menu :class="$style.buttonBar">
-            <CommonButton text="Get Chatting!" @click="clickHandlerChatButton" />
-            <CommonButton text="About" noBackground @click="clickHandlerAboutButton" />
+            <CommonButton type="primary" text="Get Chatting!" @click="clickHandlerChatButton" />
+            <CommonButton type="secondary" text="About" noBackground @click="clickHandlerAboutButton" />
           </menu>
         </div>
       </div>
@@ -68,6 +68,7 @@ function clickHandlerAboutButton(e: MouseEvent) {
 .logoSvg {
   width: clamp(220px, 40vw, 500px);
   height: auto;
+  opacity: 0.8;
 }
 .heroContentContainer {
   position: relative;
@@ -81,16 +82,20 @@ function clickHandlerAboutButton(e: MouseEvent) {
   flex-direction: column;
 }
 .heroTitleContainer > h2 {
+  color: black;
+  opacity: 0.8;
   font-size: clamp(20px, 3vw, 40px);
 }
 .heroTitleContainer > h1 {
+  color: var(--color-primary);
+  opacity: 1;
   font-size: clamp(50px, 8vw, 100px);
 }
 .buttonBar {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 @media (max-width: 800px) {
