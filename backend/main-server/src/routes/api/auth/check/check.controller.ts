@@ -1,6 +1,6 @@
 
-import User from '@src/models/User';
 import { RequestHandler } from 'express';
+import User from '@src/database/schemas/User';
 
 
 export const checkAuthController: RequestHandler<
