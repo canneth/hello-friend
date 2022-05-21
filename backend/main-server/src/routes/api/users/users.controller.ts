@@ -1,7 +1,7 @@
 
 import { RequestHandler } from 'express';
 import User from '@root/src/database/schemas/User';
-import { getUser } from './users.service';
+import { getUserById } from './users.service';
 
 export const getUserController: RequestHandler<
   { userId: User['userId'] }
@@ -10,8 +10,8 @@ export const getUserController: RequestHandler<
   const idOfUserToGet = req.params.userId;
 
   try {
-    const user = await getUser(idOfUserToGet);
-    return res.status(200).json(user);
+    const user = await getUserById(idOfUserToGet);
+    return res.status(200).send(user);
 
   } catch (err) {
     console.log(err);
