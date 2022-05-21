@@ -4,7 +4,7 @@ import knex from 'knex';
 const knexClient = knex({
   client: 'pg',
   connection: (
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV === 'development' || 'test'
       ? {
         host: 'localhost',
         user: 'postgres',
