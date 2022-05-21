@@ -1,6 +1,26 @@
 <script setup lang="ts">
 
+import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
+import TheAuthForm from '@/components/TheAuthForm.vue';
+
+const router = useRouter();
+
+function clickHandlerLoginRedirectLink(e: MouseEvent) {
+  e.preventDefault();
+  router.push('/login');
+}
+function clickHandlerRegisterButton(e: MouseEvent) {
+  e.preventDefault();
+  /*
+    TODO:
+    * Make call to backend to register user.
+    * Make call to backend to log user in.
+    * Store logged in userId in local storage.
+    * Set logged in user in store.
+  */
+  router.back();
+}
 
 </script>
 
@@ -10,7 +30,7 @@ import TheNavBar from '@/components/TheNavBar.vue';
       <TheNavBar :class="$style.navBar" />
     </header>
     <main :class="$style.pageContentContainer">
-      This is the RegisterView!
+      <TheAuthForm type="register" />
     </main>
   </div>
 </template>
