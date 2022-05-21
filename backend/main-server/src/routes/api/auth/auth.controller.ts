@@ -25,7 +25,7 @@ export const loginController: RequestHandler<
       httpOnly: true,
       maxAge: ACCESS_TOKEN_DURATION
     });
-    return res.status(200).send({ userId: user.userId, duration: ACCESS_TOKEN_DURATION });
+    return res.status(200).send({ userId: user.userId });
   } catch (err) {
     console.log(err);
     return res.status(500).send('Error logging in!');
