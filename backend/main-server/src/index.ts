@@ -1,6 +1,6 @@
 
 import 'dotenv/config';
-import '@src/import-aliases/config';
+import './import-aliases/config';
 
 import express from 'express';
 import cors from 'cors';
