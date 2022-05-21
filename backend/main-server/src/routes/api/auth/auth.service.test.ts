@@ -50,14 +50,14 @@ describe('verifyCredentials(email, password)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
     const verificationPassed = await verifyCredentials(email, plainTextPassword);
 
     /* Cleanup */
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Test */
     expect(verificationPassed).toBe(true);
@@ -74,7 +74,7 @@ describe('verifyCredentials(email, password)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Execute */
     const verificationPassed = await verifyCredentials(email, plainTextPassword);
@@ -94,14 +94,14 @@ describe('verifyCredentials(email, password)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
     const verificationPassed = await verifyCredentials(email, 'wrong-password');
 
     /* Cleanup */
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Test */
     expect(verificationPassed).toBe(false);
