@@ -2,9 +2,8 @@
 import { RequestHandler } from 'express';
 import { generateAccessToken, verifyCredentials } from '@src/routes/api/auth/auth.service';
 import { getUserByEmail } from '@src/routes/api/users/users.service';
+import { ACCESS_TOKEN_COOKIE_NAME, ACCESS_TOKEN_DURATION } from '@src/globals/constants';
 import User from '@src/database/schemas/User';
-
-export const ACCESS_TOKEN_DURATION = 24 * 60 * 60 * 1000; // 1 day.
 
 export const loginController: RequestHandler<
   {}, // Params dictionary
@@ -21,7 +20,7 @@ export const loginController: RequestHandler<
     const verified = await verifyCredentials(email, password);
     if (!verified) return res.status(401).send('Incorrect email or password!');
     const accessToken = generateAccessToken(user.userId);
-    res.cookie('hellofriend_accesstoken', accessToken, {
+    res.cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, {
       httpOnly: true,
       maxAge: ACCESS_TOKEN_DURATION
     });
