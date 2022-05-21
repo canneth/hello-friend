@@ -47,7 +47,7 @@
 <style module>
 .body,
 .hand {
-  fill: var(--color-primary);
+  fill: var(--color-primary-base);
   stroke-width: 2px;
 }
 .mouth,

@@ -82,20 +82,19 @@ function clickHandlerAboutButton(e: MouseEvent) {
   flex-direction: column;
 }
 .heroTitleContainer > h2 {
-  color: black;
-  opacity: 0.8;
-  font-size: clamp(20px, 3vw, 40px);
+  color: var(--color-primary-base);
+  font-size: clamp(20px, 3vw, 30px);
 }
 .heroTitleContainer > h1 {
-  color: var(--color-primary);
-  opacity: 1;
+  font-weight: bold;
+  color: var(--color-secondary-base);
   font-size: clamp(50px, 8vw, 100px);
 }
 .buttonBar {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 @media (max-width: 800px) {

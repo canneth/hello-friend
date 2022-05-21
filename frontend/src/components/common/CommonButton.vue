@@ -25,39 +25,29 @@ const router = useRouter();
   padding: 13px 26px;
   border: 2px solid transparent;
   font-size: var(--font-size-regular);
-  border-radius: 7px;
   overflow: clip;
-}
-.overallContainer::before {
-  z-index: -1;
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0.8;
-  background-color: var(--color-primary);
+  box-shadow: var(--box-shadow-standard);
+  background-color: var(--color-contrast-light);
   transition:
     background-color 100ms ease-out,
-    opacity 100ms ease-out;
+    box-shadow 100ms ease-out;
 }
-.overallContainer.secondary::before {
+.overallContainer.secondary {
   background-color: var(--color-contrast-dark);
+}
+.overallContainer:hover {
+  cursor: pointer;
+  box-shadow: var(--box-shadow-hover);
+  background-color: var(--color-primary-base);
 }
 
 .text {
   font-size: inherit;
   color: var(--color-body);
   white-space: nowrap;
-  transition: color 100ms ease-out;
+  transition: opacity 100ms ease-out;
 }
-
-.overallContainer:hover {
-  cursor: pointer;
-}
-.overallContainer:hover::before {
+.overallContainer:hover > .text {
   opacity: 1;
-}
-.overallContainer.secondary:hover::before {
-  background-color: var(--color-contrast-light);
 }
 </style>

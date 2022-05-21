@@ -91,25 +91,16 @@ import { RouterView } from 'vue-router';
   --font-size-largest: var(--font-size-web-largest);
 
   /* Color palette */
-  /* --color-primary-dark: #ff7300;
-  --color-primary-base: #ffbc57;
-  --color-primary-light: #FFDAA4;
-  --color-primary-lighter: #ffedd2;
-  --color-grey-white: #FFFFFF;
-  --color-grey-offwhite: #F5F5F5;
-  --color-grey-light: #D3D3D3;
-  --color-grey-base: #757575;
-  --color-grey-dark: #505050;
-  --color-grey-black: #000000; */
 
-  --color-primary: #ff8a1c;
+  --color-secondary-base: #ff6c40;
+  --color-primary-base: #ffa551;
   --color-status-ok: #6AE9BF;
   --color-status-warning: #EDC84C;
   --color-status-error: #E96A6A;
   --color-body: #FFFFFF;
-  --color-background: #252730;
-  --color-contrast-light: #333746;
-  --color-contrast-dark: #191b1f;
+  --color-background: #1b1b1b;
+  --color-contrast-light: #272727;
+  --color-contrast-dark: #131313;
 
   /* Box shadows */
   --box-shadow-standard: 2px 2px 4px 1px rgba(0, 0, 0, 0.05);
