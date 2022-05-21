@@ -1,6 +1,9 @@
 
 import jwt from 'jsonwebtoken';
-import { decodeAccessToken, generateAccessToken } from './auth.service';
+import bcrypt from 'bcrypt';
+import knexClient from '@src/database/client';
+import { decodeAccessToken, generateAccessToken, verifyCredentials } from './auth.service';
+import User from '@src/database/schemas/User';
 
 
 describe('generateAccessToken(userId)', () => {
@@ -31,5 +34,76 @@ describe('decodeAccessToken(accessToken)', () => {
 
     /* Test */
     expect(decodedPayload).toMatchObject(testPayload);
+  });
+});
+
+describe('verifyCredentials(email, password)', () => {
+  it('returns true if a user with that email exists, and the password is correct', async () => {
+    /* Setup */
+    const email = 'some@email.com';
+    const plainTextPassword = 'plain-text-password';
+    const testUser: Partial<User> = {
+      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
+      email,
+      handle: 'some-handle',
+      password: await bcrypt.hash(plainTextPassword, 10),
+      name: 'Some Name',
+      avatarSrc: 'some-url'
+    }
+    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').insert(testUser);
+
+    /* Execute */
+    const verificationPassed = await verifyCredentials(email, plainTextPassword);
+
+    /* Cleanup */
+    await knexClient<User>('User').delete().where(testUser);
+
+    /* Test */
+    expect(verificationPassed).toBe(true);
+  });
+  it('returns false if a user with that email does not exist in the database', async () => {
+    /* Setup */
+    const email = 'some@email.com';
+    const plainTextPassword = 'plain-text-password';
+    const testUser: Partial<User> = {
+      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
+      email,
+      handle: 'some-handle',
+      password: await bcrypt.hash(plainTextPassword, 10),
+      name: 'Some Name',
+      avatarSrc: 'some-url'
+    }
+    await knexClient<User>('User').delete().where(testUser);
+
+    /* Execute */
+    const verificationPassed = await verifyCredentials(email, plainTextPassword);
+
+    /* Test */
+    expect(verificationPassed).toBe(false);
+  });
+  it('returns false if a user with that email exists, but password is incorrect', async () => {
+    /* Setup */
+    const email = 'some@email.com';
+    const plainTextPassword = 'plain-text-password';
+    const testUser: Partial<User> = {
+      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
+      email,
+      handle: 'some-handle',
+      password: await bcrypt.hash(plainTextPassword, 10),
+      name: 'Some Name',
+      avatarSrc: 'some-url'
+    }
+    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').insert(testUser);
+
+    /* Execute */
+    const verificationPassed = await verifyCredentials(email, 'wrong-password');
+
+    /* Cleanup */
+    await knexClient<User>('User').delete().where(testUser);
+
+    /* Test */
+    expect(verificationPassed).toBe(false);
   });
 });
