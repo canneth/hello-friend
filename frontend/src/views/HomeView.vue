@@ -88,7 +88,7 @@ function clickHandlerAboutButton(e: MouseEvent) {
 .heroTitleContainer > h1 {
   font-weight: bold;
   color: var(--color-secondary-base);
-  font-size: clamp(50px, 8vw, 100px);
+  font-size: clamp(50px, 7vw, 100px);
 }
 .buttonBar {
   position: relative;
