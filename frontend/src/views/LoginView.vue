@@ -24,7 +24,7 @@ function clickHandlerLogInButton(e: MouseEvent) {
       <TheNavBar :class="$style.navBar" />
     </header>
     <main :class="$style.pageContentContainer">
-      <CommonButton text="Temporary log in button" @click="clickHandlerLogInButton" />
+      <CommonButton type="primary" text="Temporary log in button" @click="clickHandlerLogInButton" />
     </main>
   </div>
 </template>
