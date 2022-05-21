@@ -5,6 +5,7 @@ import { getUserByEmail } from '@src/routes/api/users/users.service';
 import { ACCESS_TOKEN_COOKIE_NAME, ACCESS_TOKEN_DURATION } from '@src/globals/constants';
 import User from '@src/database/schemas/User';
 
+
 export const loginController: RequestHandler<
   {}, // Params dictionary
   {}, // Res body
@@ -29,4 +30,19 @@ export const loginController: RequestHandler<
     console.log(err);
     return res.status(500).send('Error logging in!');
   }
+};
+
+export const logoutController: RequestHandler = (req, res) => {
+  delete req.loggedInUserId;
+  res.clearCookie(ACCESS_TOKEN_COOKIE_NAME);
+  return res.status(204).send('Successfully logged out!');
+};
+
+export const verifyAuthController: RequestHandler<
+  {},
+  {},
+  { userId: User['userId'] }
+> = (req, res) => {
+  // TODO: Check if userId is indeed logged in.
+  return res.send('Auth checked!');
 };

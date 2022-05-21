@@ -1,11 +1,11 @@
 
 import { Router } from 'express';
-import loginRouter from './login/login.router';
-import logoutRouter from './logout/logout.router';
+import { loginController, logoutController, verifyAuthController } from './auth.controller';
 
 const router = Router();
 
-router.use('/login', loginRouter);
-router.use('/logout', logoutRouter);
+router.post('/login', loginController);
+router.post('/logout', logoutController);
+router.post('/verify', verifyAuthController);
 
 export default router;
