@@ -14,7 +14,7 @@ describe('getUserById(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
@@ -22,7 +22,7 @@ describe('getUserById(user)', () => {
     delete retrievedUser?.dtmCreated;
 
     /* Cleanup */
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Test */
     expect(retrievedUser).toEqual(testUser);
@@ -37,7 +37,7 @@ describe('getUserById(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Execute */
     const retrievedUser = await getUserById(testUser.userId!);
@@ -58,7 +58,7 @@ describe('getUserByEmail(email)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
@@ -66,7 +66,7 @@ describe('getUserByEmail(email)', () => {
     delete retrievedUser?.dtmCreated;
 
     /* Cleanup */
-    await knexClient<User>('User').delete('*').where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Test */
     expect(retrievedUser).toEqual(testUser);
@@ -81,7 +81,7 @@ describe('getUserByEmail(email)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Execute */
     const retrievedUser = await getUserByEmail(testUser.email!);
@@ -102,11 +102,14 @@ describe('addNewUser(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete().where(testUser);
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Execute */
     const queryResult = await knexClient<User>('User').insert(testUser).returning(Object.keys(testUser));
     const insertedUser = queryResult[0];
+
+    /* Cleanup */
+    await knexClient<User>('User').delete().where('userId', testUser.userId);
 
     /* Test */
     expect(insertedUser).toEqual(testUser);
