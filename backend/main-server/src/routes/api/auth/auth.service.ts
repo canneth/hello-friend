@@ -1,6 +1,6 @@
 
 import User from '@src/database/schemas/User';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { getUserByEmail } from '@src/routes/api/users/users.service';
 
@@ -9,8 +9,12 @@ export function generateAccessToken(userId: User['userId']) {
   return accessToken;
 }
 
-export function decodeAccessToken(accessToken: string) {
-  const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!);
+export function decodeAccessToken(accessToken: string): JwtPayload & { userId: User['userId'] } {
+  const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload & { userId: User['userId'] };
+  if (
+    typeof payload === 'string'
+    || !payload.userId
+  ) throw new Error('Incorrect usage of decodeAccessToken(accessToken)! accessToken must include a userId property in its payload');
   return payload;
 }
 

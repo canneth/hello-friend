@@ -24,6 +24,7 @@ describe('decodeAccessToken(accessToken)', () => {
   it('returns the decoded payload of the accessToken', () => {
     /* Setup */
     const testPayload = {
+      userId: 'some-user-id',
       someString: 'someVal',
       someNum: 5
     };
