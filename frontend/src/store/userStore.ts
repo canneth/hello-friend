@@ -1,5 +1,5 @@
 
-import type User from '@/models/User';
+import type User from '@/schemas/User';
 
 const userStore = {
   user: null as User | null,
