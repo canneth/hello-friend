@@ -56,6 +56,8 @@ function clickHandlerLoginRedirectLink(e: MouseEvent) {
 }
 async function clickHandlerRegisterButton(e: MouseEvent) {
   e.preventDefault();
+  for (const field of Object.keys(formValues.value) as (keyof typeof formValues.value)[]) validateInputOfField(field);
+  if (Object.values(formErrors.value).some(errorMessage => errorMessage === undefined || errorMessage !== null)) return;
   try {
     await backendAxios.post('/api/register', formValues.value);
     const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValues);
