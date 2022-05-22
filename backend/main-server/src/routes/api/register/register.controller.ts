@@ -1,5 +1,6 @@
 
 import { RequestHandler } from 'express';
+import bcrypt from 'bcrypt';
 import { addNewUser, getUserByEmail } from '@src/routes/api/users/users.service';
 import User from '@root/src/database/schemas/User';
 
@@ -15,7 +16,8 @@ export const registerController: RequestHandler<
   try {
     const existingUser = await getUserByEmail(email);
     if (existingUser) return res.status(409).send('User with this email already exists!');
-    await addNewUser({ email, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await addNewUser({ email, password: hashedPassword });
     return res.status(201).send('User registered successfully!');
   } catch (err) {
     console.log(err);
