@@ -8,6 +8,7 @@ import useUserStore from '@/composables/useUserStore';
 import backendAxios from '@/globals/configuredAxios';
 import type User from '@/schemas/User';
 import type { LoggedInUser } from '@/store/userStore';
+import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
 
 const props = defineProps<{
   type: 'login' | 'register';
@@ -103,7 +104,7 @@ async function clickHandlerSubmitButton(e: MouseEvent) {
   try {
     if (props.type === 'register') await backendAxios.post('/api/register', formValuesRef.value);
     const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValuesRef.value);
-    localStorage.setItem('hellofriend_loggedInUserId', userId);
+    localStorage.setItem(LS_LOGGED_IN_USER_KEY_NAME, userId);
     const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${userId}`);
     userStore.value.setUser(user);
     router.back();
