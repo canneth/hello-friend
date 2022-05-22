@@ -16,72 +16,114 @@ const props = defineProps<{
 const router = useRouter();
 const userStore = useUserStore();
 
-if (userStore.value.user) router.back();
-
-const formValues = ref({
+const formValuesRef = ref({
   email: '',
   password: ''
 });
-const formErrors = ref<{
+const formErrorsRef = ref<{
   email?: string | null,
   password?: string | null
 }>({});
 
-function validateInputOfField(fieldName: keyof typeof formValues.value) {
+function validateInputOfField(fieldName: keyof typeof formValuesRef.value) {
   switch (fieldName) {
     case 'email': {
-      formErrors.value.email = ((email) => {
+      formErrorsRef.value.email = ((email) => {
         if (!email) return 'Please enter an email';
         if (!/^.+@.+$/.test(email)) return 'Please enter a valid email';
         if (email.length > 50) return 'Please enter an email no longer than 50 characters';
         return null;
-      })(formValues.value.email);
+      })(formValuesRef.value.email);
       break;
     }
     case 'password': {
-      formErrors.value.password = ((password) => {
+      formErrorsRef.value.password = ((password) => {
         if (!password) return 'Please enter a password';
         if (password.length > 50) return 'Please enter a password no longer than 50 characters';
         return null;
-      })(formValues.value.password);
+      })(formValuesRef.value.password);
       break;
     }
     default: return;
   }
 }
 
-function clickHandlerLoginRedirectLink(e: MouseEvent) {
+/* Props into title */
+
+const titleText = (() => {
+  switch (props.type) {
+    case 'register': return 'Welcome!';
+    case 'login': return `Welcome Back!`;
+  }
+})();
+
+/* Props into redirect line */
+
+const redirectPromptText = (() => {
+  switch (props.type) {
+    case 'register': return 'Already have an account?';
+    case 'login': return `Don't have an account yet?`;
+  }
+})();
+
+const redirectLinkText = (() => {
+  switch (props.type) {
+    case 'register': return 'Log in';
+    case 'login': return 'Sign up';
+  }
+})();
+
+function clickHandlerRedirectLink(e: MouseEvent) {
   e.preventDefault();
-  router.push('/login');
+  switch (props.type) {
+    case 'register': {
+      router.push('/login');
+      break;
+    }
+    case 'login': {
+      router.push('/register');
+      break;
+    }
+  }
 }
-async function clickHandlerRegisterButton(e: MouseEvent) {
+
+/* Props into submit button */
+
+const submitButtonText = (() => {
+  switch (props.type) {
+    case 'register': return 'Register';
+    case 'login': return 'Login';
+  }
+})();
+
+async function clickHandlerSubmitButton(e: MouseEvent) {
   e.preventDefault();
-  for (const field of Object.keys(formValues.value) as (keyof typeof formValues.value)[]) validateInputOfField(field);
-  if (Object.values(formErrors.value).some(errorMessage => errorMessage === undefined || errorMessage !== null)) return;
+  for (const field of Object.keys(formValuesRef.value) as (keyof typeof formValuesRef.value)[]) validateInputOfField(field);
+  if (Object.values(formErrorsRef.value).some(errorMessage => errorMessage === undefined || errorMessage !== null)) return;
   try {
-    await backendAxios.post('/api/register', formValues.value);
-    const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValues);
+    if (props.type === 'register') await backendAxios.post('/api/register', formValuesRef.value);
+    const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValuesRef.value);
     localStorage.setItem('hellofriend_loggedInUserId', userId);
     const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${userId}`);
     userStore.value.setUser(user);
     router.back();
   } catch (err) {
     console.log(err);
-    if (axios.isAxiosError(err)) {
-      if (err.response) {
-        if (err.response.status === 409) formErrors.value.email = 'A user with that email already exists';
+    if (!axios.isAxiosError(err)) return;
+    if (!err.response) return;
+    switch (props.type) {
+      case 'register': {
+        if (err.response.status === 409) formErrorsRef.value.email = 'A user with that email already exists';
+        break;
+      }
+      case 'login': {
+        if (err.response.status === 401) {
+          formErrorsRef.value.email = 'Email or password may be incorrect';
+          formErrorsRef.value.password = 'Email or password may be incorrect';
+        }
       }
     }
   }
-}
-function clickHandlerLoginButton(e: MouseEvent) {
-  e.preventDefault();
-  /*
-    TODO:
-    * Make call to backend to log user in.
-    * Store logged-in userId in local storage.
-    * Set logged-in user in store.
-  */
 }
 
 </script>
@@ -89,47 +131,46 @@ function clickHandlerLoginButton(e: MouseEvent) {
 <template>
   <div :class="$style.overallContainer">
     <h1 :class="$style.title">
-      Welcome!
+      {{ titleText }}
     </h1>
     <form :class="$style.form">
       <div :class="[
         $style.fieldContainer,
-        formErrors.email === null && $style.validInput,
-        formErrors.email && $style.invalidInput
+        formErrorsRef.email === null && $style.validInput,
+        formErrorsRef.email && $style.invalidInput
       ]">
         <label name="email">
           Email
         </label>
-        <input name="email" type="text" v-model="formValues.email" @focusout="validateInputOfField('email')" />
+        <input name="email" type="text" v-model="formValuesRef.email" @focusout="validateInputOfField('email')" />
         <p :class="$style.errorMessage">
-          {{ formErrors.email }}
+          {{ formErrorsRef.email }}
         </p>
       </div>
       <div :class="[
         $style.fieldContainer,
-        formErrors.password === null && $style.validInput,
-        formErrors.password && $style.invalidInput
+        formErrorsRef.password === null && $style.validInput,
+        formErrorsRef.password && $style.invalidInput
       ]">
         <!-- TODO: Add a show-password toggle button -->
         <label name="password">
           Password
         </label>
-        <input name="password" type="password" v-model="formValues.password" @focusout="validateInputOfField('password')" />
+        <input name="password" type="password" v-model="formValuesRef.password" @focusout="validateInputOfField('password')" />
         <p :class="$style.errorMessage">
-          {{ formErrors.password }}
+          {{ formErrorsRef.password }}
         </p>
       </div>
     </form>
     <div :class="$style.redirectLine">
       <p>
-        Already have an account?
+        {{ redirectPromptText }}
       </p>
-      <a href="" @click="clickHandlerLoginRedirectLink">
-        Log in
+      <a href="" @click="clickHandlerRedirectLink">
+        {{ redirectLinkText }}
       </a>
     </div>
-    <CommonButton v-if="type === 'register'" :class="$style.submitButton" type="primary" text="Register" @click="clickHandlerRegisterButton" />
-    <CommonButton v-if="type === 'login'" :class="$style.submitButton" type="primary" text="Log In" @click="clickHandlerLoginButton" />
+    <CommonButton :class="$style.submitButton" type="primary" :text="submitButtonText" @click="clickHandlerSubmitButton" />
   </div>
 </template>
 

@@ -2,19 +2,13 @@
 
 import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
-import CommonButton from '@/components/common/CommonButton.vue';
+import TheAuthForm from '@/components/TheAuthForm.vue';
 import useUserStore from '@/composables/useUserStore';
-import mockUser from '@/mocks/mockUser';
 
-const store = useUserStore();
 const router = useRouter();
+const userStore = useUserStore();
 
-function clickHandlerLogInButton(e: MouseEvent) {
-  e.preventDefault();
-  store.value.setUser(mockUser);
-  // TODO: Call backend to log user in.
-  router.back();
-}
+if (userStore.value.user) router.back();
 
 </script>
 
@@ -24,7 +18,7 @@ function clickHandlerLogInButton(e: MouseEvent) {
       <TheNavBar :class="$style.navBar" />
     </header>
     <main :class="$style.pageContentContainer">
-      <CommonButton type="primary" text="Temporary log in button" @click="clickHandlerLogInButton" />
+      <TheAuthForm type="login" />
     </main>
   </div>
 </template>
