@@ -4,11 +4,13 @@ import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
 import TheAuthForm from '@/components/TheAuthForm.vue';
 import useUserStore from '@/composables/useUserStore';
+import useUIStore from '@/composables/useUIStore';
 
 const router = useRouter();
 const userStore = useUserStore();
+const uiStore = useUIStore();
 
-if (userStore.value.user) router.back();
+if (userStore.value.user) router.replace(uiStore.value.lastPathVisitedBeforeLogin);
 
 </script>
 

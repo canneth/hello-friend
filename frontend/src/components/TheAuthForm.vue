@@ -5,10 +5,11 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import CommonButton from '@/components/common/CommonButton.vue';
 import useUserStore from '@/composables/useUserStore';
-import backendAxios from '@/globals/configuredAxios';
-import type User from '@/schemas/User';
+import useUIStore from '@/composables/useUIStore';
 import type { LoggedInUser } from '@/store/userStore';
+import backendAxios from '@/globals/configuredAxios';
 import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
+import type User from '@/schemas/User';
 
 const props = defineProps<{
   type: 'login' | 'register';
@@ -16,6 +17,7 @@ const props = defineProps<{
 
 const router = useRouter();
 const userStore = useUserStore();
+const uiStore = useUIStore();
 
 const formValuesRef = ref({
   email: '',
@@ -107,7 +109,7 @@ async function clickHandlerSubmitButton(e: MouseEvent) {
     localStorage.setItem(LS_LOGGED_IN_USER_KEY_NAME, userId);
     const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${userId}`);
     userStore.value.setUser(user);
-    router.back();
+    router.replace(uiStore.value.lastPathVisitedBeforeLogin);
   } catch (err) {
     console.log(err);
     if (!axios.isAxiosError(err)) return;

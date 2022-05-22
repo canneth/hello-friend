@@ -1,20 +1,15 @@
 <script setup lang="ts">
 
-import { RouterView } from 'vue-router';
+import { RouterView, useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import useUserStore from '@/composables/useUserStore';
+import useUIStore from '@/composables/useUIStore';
 import type { LoggedInUser } from '@/store/userStore';
 import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
 import backendAxios from '@/globals/configuredAxios';
 
 const userStore = useUserStore();
 
-/*
-  TODO:
-  * Check local storage for user key.
-  * Send backend call to check if claimed user in local storage matches actual logged-in user.
-  * If no local storage user key, log user out.
-*/
 (async () => {
   const claimedUserId = localStorage.getItem(LS_LOGGED_IN_USER_KEY_NAME);
   try {
@@ -35,6 +30,14 @@ const userStore = useUserStore();
     if (!err.response) return;
   }
 })();
+
+const router = useRouter();
+const route = useRoute();
+const uiStore = useUIStore();
+
+router.afterEach((to, from) => {
+  if (to.name !== 'login' && to.name !== 'register') uiStore.value.setLastPathVisitedBeforeLogin(route.path);
+});
 
 </script>
 
