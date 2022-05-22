@@ -5,10 +5,12 @@ import { getUserById } from './users.service';
 import { censorUser } from './users.utils';
 
 export const getUserController: RequestHandler<
-  { userId: User['userId'] }
+  { userId?: User['userId'] }
 > = async (req, res) => {
 
   const idOfUserToGet = req.params.userId;
+
+  if (!idOfUserToGet) return res.status(400).send(`Request body is missing a userId property!`);
 
   try {
     const user = await getUserById(idOfUserToGet);
