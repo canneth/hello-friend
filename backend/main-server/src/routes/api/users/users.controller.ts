@@ -14,7 +14,7 @@ export const getUserController: RequestHandler<
     const user = await getUserById(idOfUserToGet);
     if (!user) return res.status(404).send('No corresponding user found!');
     const censoredUser = censorUser(user);
-    return res.status(200).send(censoredUser);
+    return res.status(200).send({ user: censoredUser });
   } catch (err) {
     console.log(err);
     return res.status(500).send('Error occured when fetching user!');
