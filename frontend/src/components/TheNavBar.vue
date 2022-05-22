@@ -10,13 +10,13 @@ import SvgLogo from '@/components/svg/SvgLogo.vue';
 import backendAxios from '@/globals/configuredAxios';
 import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
 
-const store = useUserStore();
+const userStore = useUserStore();
 const router = useRouter();
 const route = useRoute();
 
 const displayName = computed(() => {
   // Grab just the first word in the name.
-  return store.value.user?.name.split(' ')[0];
+  return userStore.value.user?.name.split(' ')[0];
 });
 
 function clickHandlerLoginButton(e: MouseEvent) {
@@ -43,7 +43,7 @@ async function clickHandlerLogOut(e: MouseEvent) {
   e.preventDefault();
   try {
     await backendAxios.post('/api/auth/logout');
-    store.value.setUser(null);
+    userStore.value.setUser(null);
     localStorage.removeItem(LS_LOGGED_IN_USER_KEY_NAME);
   } catch (err) {
     console.log(err);
@@ -66,13 +66,13 @@ async function clickHandlerLogOut(e: MouseEvent) {
     <Transition
       :enter-active-class="$style.optionsContainerEnterActive"
       :leave-active-class="$style.optionsContainerLeaveActive">
-      <menu v-if="store.user" :class="$style.loggedInOptionsContainer">
+      <menu v-if="userStore.user" :class="$style.loggedInOptionsContainer">
         <CommonButton :class="$style.logOutButton" type="secondary" text="Log Out" noBackground @click="clickHandlerLogOut" />
         <TheNavBarProfileButton
-          v-if="store.user"
+          v-if="userStore.user"
           :class="$style.profileButton"
           :displayName="displayName!"
-          :avatarSrc="store.user.avatarSrc"
+          :avatarSrc="userStore.user.avatarSrc"
           @click="clickHandlerProfileButton" />
       </menu>
       <menu v-else :class="$style.notLoggedInOptionsContainer">
