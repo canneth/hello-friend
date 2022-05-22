@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import axios from 'axios';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import CommonButton from '@/components/common/CommonButton.vue';
 import useUserStore from '@/composables/useUserStore';
@@ -51,28 +51,28 @@ function validateInputOfField(fieldName: keyof typeof formValuesRef.value) {
 
 /* Props into title */
 
-const titleText = (() => {
+const titleText = computed(() => {
   switch (props.type) {
     case 'register': return 'Welcome!';
     case 'login': return `Welcome Back!`;
   }
-})();
+});
 
 /* Props into redirect line */
 
-const redirectPromptText = (() => {
+const redirectPromptText = computed(() => {
   switch (props.type) {
     case 'register': return 'Already have an account?';
     case 'login': return `Don't have an account yet?`;
   }
-})();
+});
 
-const redirectLinkText = (() => {
+const redirectLinkText = computed(() => {
   switch (props.type) {
     case 'register': return 'Log in';
     case 'login': return 'Sign up';
   }
-})();
+});
 
 function clickHandlerRedirectLink(e: MouseEvent) {
   e.preventDefault();
@@ -90,12 +90,12 @@ function clickHandlerRedirectLink(e: MouseEvent) {
 
 /* Props into submit button */
 
-const submitButtonText = (() => {
+const submitButtonText = computed(() => {
   switch (props.type) {
     case 'register': return 'Register';
     case 'login': return 'Login';
   }
-})();
+});
 
 async function clickHandlerSubmitButton(e: MouseEvent) {
   e.preventDefault();
