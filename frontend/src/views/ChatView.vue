@@ -5,9 +5,9 @@ import useUserStore from '@/composables/useUserStore';
 import TheChatViewSideBar from '@/components/TheChatViewSideBar.vue';
 
 const router = useRouter();
-const store = useUserStore();
+const userStore = useUserStore();
 
-// if (!store.value.user) router.push('/login');
+// if (!userStore.value.user) router.push('/login');
 
 </script>
 
