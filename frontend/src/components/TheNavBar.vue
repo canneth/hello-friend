@@ -2,10 +2,13 @@
 
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 import CommonButton from '@/components/common/CommonButton.vue';
 import TheNavBarProfileButton from '@/components/TheNavBarProfileButton.vue';
 import useUserStore from '@/composables/useUserStore';
 import SvgLogo from '@/components/svg/SvgLogo.vue';
+import backendAxios from '@/globals/configuredAxios';
+import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
 
 const store = useUserStore();
 const router = useRouter();
@@ -36,10 +39,18 @@ function clickHandlerProfileButton(e: MouseEvent) {
   // TODO: Route to profile page.
 }
 
-function clickHandlerLogOut(e: MouseEvent) {
+async function clickHandlerLogOut(e: MouseEvent) {
   e.preventDefault();
-  store.value.setUser(null);
-  // TODO: Send call to backend to log user out.
+  try {
+    await backendAxios.post('/api/auth/logout');
+    store.value.setUser(null);
+    localStorage.removeItem(LS_LOGGED_IN_USER_KEY_NAME);
+  } catch (err) {
+    console.log(err);
+    if (!axios.isAxiosError(err)) return;
+    if (!err.response) return;
+    console.log(err.response);
+  }
 }
 
 </script>
