@@ -29,15 +29,19 @@ const props = defineProps<{
   border-radius: 5px;
 }
 .text {
-  color: var(--color-grey-black);
+  color: var(--color-body);
   font-size: var(--font-size-small);
   transition: color 100ms ease-out;
 }
 .avatarContainer {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 50%;
+  padding: 1px;
   overflow: clip;
   transition: border-color 100ms ease-out;
 }
@@ -51,10 +55,10 @@ const props = defineProps<{
     cursor: pointer;
   }
   .overallContainer:hover > .text {
-    color: var(--color-primary-dark);
+    color: var(--color-primary-base);
   }
   .overallContainer:hover > .avatarContainer {
-    border-color: var(--color-primary-dark);
+    border-color: var(--color-primary-base);
   }
 }
 </style>
