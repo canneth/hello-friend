@@ -4,9 +4,7 @@ import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
 import SvgLogo from '@/components/svg/SvgLogo.vue';
 import CommonButton from '@/components/common/CommonButton.vue';
-import useUserStore from '@/composables/useUserStore';
 
-const store = useUserStore();
 const router = useRouter();
 
 function clickHandlerChatButton(e: MouseEvent) {
