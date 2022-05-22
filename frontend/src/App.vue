@@ -1,6 +1,40 @@
 <script setup lang="ts">
 
 import { RouterView } from 'vue-router';
+import axios from 'axios';
+import useUserStore from '@/composables/useUserStore';
+import type { LoggedInUser } from '@/store/userStore';
+import { LS_LOGGED_IN_USER_KEY_NAME } from '@/globals/constants';
+import backendAxios from '@/globals/configuredAxios';
+
+const userStore = useUserStore();
+
+/*
+  TODO:
+  * Check local storage for user key.
+  * Send backend call to check if claimed user in local storage matches actual logged-in user.
+  * If no local storage user key, log user out.
+*/
+(async () => {
+  const claimedUserId = localStorage.getItem(LS_LOGGED_IN_USER_KEY_NAME);
+  try {
+    if (!claimedUserId) return backendAxios.post('/api/auth/logout');
+    const { data: { verified } } = await backendAxios.post('/api/auth/verify', { userId: claimedUserId });
+    if (verified) {
+      const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${claimedUserId}`);
+      userStore.value.setUser(user);
+    } else {
+      localStorage.removeItem(LS_LOGGED_IN_USER_KEY_NAME);
+      userStore.value.setUser(null);
+      await backendAxios.post('/api/auth/logout');
+    }
+    return;
+  } catch (err) {
+    console.log(err);
+    if (!axios.isAxiosError(err)) return;
+    if (!err.response) return;
+  }
+})();
 
 </script>
 

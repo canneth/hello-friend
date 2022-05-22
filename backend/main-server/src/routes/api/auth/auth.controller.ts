@@ -46,6 +46,18 @@ export const verifyController: RequestHandler<
   {},
   { userId?: User['userId'] }
 > = (req, res) => {
-  // TODO: Check if userId is indeed logged in.
-  return res.send('Auth checked!');
+
+  const claimedUserId = req.body.userId;
+  const loggedInUserId = req.loggedInUserId;
+
+  if (!claimedUserId) return res.status(400).send('Request body is missing a userId property!');
+  if (!loggedInUserId) return res.status(401).send('There is no logged-in user!');
+
+  if (claimedUserId === loggedInUserId) return res.status(200).send({ verified: true });
+
+  // For safety reasons, log user out when verification fails.
+  delete req.loggedInUserId;
+  res.clearCookie(ACCESS_TOKEN_COOKIE_NAME);
+
+  return res.status(401).send({ verified: false });
 };
