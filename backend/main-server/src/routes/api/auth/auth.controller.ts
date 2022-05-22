@@ -38,10 +38,10 @@ export const logoutController: RequestHandler = (req, res) => {
   return res.status(204).send('Successfully logged out!');
 };
 
-export const verifyAuthController: RequestHandler<
+export const verifyController: RequestHandler<
   {},
   {},
-  { userId: User['userId'] }
+  { userId?: User['userId'] }
 > = (req, res) => {
   // TODO: Check if userId is indeed logged in.
   return res.send('Auth checked!');
