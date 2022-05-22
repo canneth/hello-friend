@@ -3,11 +3,14 @@
 import { useRouter } from 'vue-router';
 import useUserStore from '@/composables/useUserStore';
 import TheChatViewSideBar from '@/components/TheChatViewSideBar.vue';
+import { onBeforeMount } from 'vue';
 
 const router = useRouter();
 const userStore = useUserStore();
 
-// if (!userStore.value.user) router.push('/login');
+onBeforeMount(() => {
+  if (!userStore.value.user) router.push('/login');
+});
 
 </script>
 

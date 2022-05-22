@@ -35,8 +35,12 @@ const router = useRouter();
 const route = useRoute();
 const uiStore = useUIStore();
 
-router.afterEach((to, from) => {
-  if (to.name !== 'login' && to.name !== 'register') uiStore.value.setLastPathVisitedBeforeLogin(route.path);
+router.beforeEach((to, from) => {
+  if (to.name === 'login' || to.name === 'register') {
+    if (from.name === 'login' || from.name === 'register') return;
+    uiStore.value.setLastPathVisitedBeforeLogin(from.path);
+    console.log(`From: ${from.path} To: ${to.path} | in store: ${uiStore.value.lastPathVisitedBeforeLogin}`);
+  }
 });
 
 </script>
