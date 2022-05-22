@@ -3,24 +3,12 @@
 import { useRouter } from 'vue-router';
 import TheNavBar from '@/components/TheNavBar.vue';
 import TheAuthForm from '@/components/TheAuthForm.vue';
+import useUserStore from '@/composables/useUserStore';
 
 const router = useRouter();
+const userStore = useUserStore();
 
-function clickHandlerLoginRedirectLink(e: MouseEvent) {
-  e.preventDefault();
-  router.push('/login');
-}
-function clickHandlerRegisterButton(e: MouseEvent) {
-  e.preventDefault();
-  /*
-    TODO:
-    * Make call to backend to register user.
-    * Make call to backend to log user in.
-    * Store logged in userId in local storage.
-    * Set logged in user in store.
-  */
-  router.back();
-}
+if (userStore.value.user) router.back();
 
 </script>
 
