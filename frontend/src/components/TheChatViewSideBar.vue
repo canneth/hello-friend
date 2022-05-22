@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import CommonSearchBar from '@/components/common/CommonSearchBar.vue';
 import useUserStore from '@/composables/useUserStore';
 
@@ -9,6 +9,15 @@ const userStore = useUserStore();
 const displayName = computed(() => {
   return userStore.value.user?.name.split(' ')[0];
 });
+
+const searchBarHasFocus = ref(false);
+
+function focusInHandlerSearchBar() {
+  searchBarHasFocus.value = true;
+}
+function focusOutHandlerSearchBar() {
+  searchBarHasFocus.value = false;
+}
 
 </script>
 
@@ -25,7 +34,7 @@ const displayName = computed(() => {
           {{ displayName }}
         </p>
       </div>
-      <CommonSearchBar :class="$style.searchBar" />
+      <CommonSearchBar :class="[$style.searchBar, searchBarHasFocus && $style.hasFocus]" @focus-in="focusInHandlerSearchBar" @focus-out="focusOutHandlerSearchBar" />
     </header>
   </div>
 </template>
@@ -35,8 +44,9 @@ const displayName = computed(() => {
   position: relative;
   height: 100%;
   width: 300px;
-  background-color: var(--color-primary-light);
+  background-color: var(--color-background);
   box-shadow: var(--box-shadow-standard);
+  overflow: clip;
 }
 .header {
   position: relative;
@@ -45,7 +55,7 @@ const displayName = computed(() => {
   gap: 16px;
   width: 100%;
   background-color: var(--color-primary-base);
-  border-bottom: 2px solid var(--color-primary-dark);
+  box-shadow: var(--box-shadow-standard);
   padding: 16px 20px;
 }
 .profileBar {
@@ -59,7 +69,7 @@ const displayName = computed(() => {
   border-radius: 50%;
   overflow: clip;
   width: 50px;
-  background: var(--color-grey-white);
+  background: white;
   aspect-ratio: 1 / 1;
 }
 .avatarImg {
@@ -67,11 +77,20 @@ const displayName = computed(() => {
   height: auto;
 }
 .displayName {
-  font-weight: bold;
-  color: var(--color-grey-black);
+  /* font-weight: bold; */
+  color: var(--color-body);
 }
 .searchBar {
   position: relative;
   width: 100%;
+  background-color: var(--color-contrast-light);
+  caret-color: var(--color-primary-base);
+  color: var(--color-secondary-base);
+  /* border: 2px solid transparent; */
+  transition: border-color 100ms ease-out;
+  font-size: var(--font-size-small);
+}
+.searchBar.hasFocus {
+  /* border-color: var(--color-secondary-base); */
 }
 </style>

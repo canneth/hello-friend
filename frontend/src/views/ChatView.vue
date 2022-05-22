@@ -26,6 +26,7 @@ onBeforeMount(() => {
   width: 100%;
   height: 100vh;
   display: flex;
+  background-color: var(--color-contrast-dark);
 }
 .sideBar {
   position: relative;
