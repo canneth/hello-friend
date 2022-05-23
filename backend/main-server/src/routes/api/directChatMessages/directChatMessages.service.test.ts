@@ -213,6 +213,10 @@ describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
     /* Execute */
     const directChatMessages = await getLatestDirectChatMessagesInvolvingUser(testUser.userId);
 
+    /* Cleanup */
+    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
+    await knexClient<User>('User').delete();
+
     /* Test */
     directChatMessages.forEach(record => delete record.dtmPosted);
     const comparator = (a: DirectChatMessage, b: DirectChatMessage) => a.directChatMessageId.localeCompare(b.directChatMessageId);
