@@ -7,5 +7,5 @@ export default interface ContactListing {
   contactUserId: User['userId']; // FOREIGN KEY
   contactListingId: string; // UNIQUE
   contactName: string;
-  dtmAdded: string; // DEFAULT CURRENT_TIMESTAMP
+  dtmAdded?: string; // DEFAULT CURRENT_TIMESTAMP
 }

@@ -7,5 +7,5 @@ export default interface GroupChatMembership {
   userId: User['userId']; // FOREIGN KEY
   groupChatId: GroupChat['groupChatId']; // FOREIGN KEY
   groupChatMembershipId: string; // UNIQUE
-  dtmJoined: string; // DEFAULT CURRENT_TIMESTAMP
+  dtmJoined?: string; // DEFAULT CURRENT_TIMESTAMP
 }
