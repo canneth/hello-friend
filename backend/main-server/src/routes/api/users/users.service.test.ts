@@ -6,7 +6,7 @@ import { getUserByEmail, getUserById } from './users.service';
 describe('getUserById(user)', () => {
   it('if the corresponding user exists in the database, returns the user', async () => {
     /* Setup */
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email: 'some@email.com',
       handle: 'some-handle',
@@ -29,7 +29,7 @@ describe('getUserById(user)', () => {
   });
   it('if the user does not exist in the database, returns null', async () => {
     /* Setup */
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email: 'some@email.com',
       handle: 'some-handle',
@@ -50,7 +50,7 @@ describe('getUserById(user)', () => {
 describe('getUserByEmail(email)', () => {
   it('if the corresponding user exists in the database, returns user', async () => {
     /* Setup */
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email: 'some@email.com',
       handle: 'some-handle',
@@ -73,7 +73,7 @@ describe('getUserByEmail(email)', () => {
   });
   it('if the user does not exist in the database, returns null', async () => {
     /* Setup */
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email: 'some@email.com',
       handle: 'some-handle',
@@ -94,7 +94,7 @@ describe('getUserByEmail(email)', () => {
 describe('addNewUser(user)', () => {
   it('adds the user to the database', async () => {
     /* Setup */
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email: 'some@email.com',
       handle: 'some-handle',

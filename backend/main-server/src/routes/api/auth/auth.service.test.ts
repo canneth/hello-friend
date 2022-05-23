@@ -43,7 +43,7 @@ describe('verifyCredentials(email, password)', () => {
     /* Setup */
     const email = 'some@email.com';
     const plainTextPassword = 'plain-text-password';
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email,
       handle: 'some-handle',
@@ -67,7 +67,7 @@ describe('verifyCredentials(email, password)', () => {
     /* Setup */
     const email = 'some@email.com';
     const plainTextPassword = 'plain-text-password';
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email,
       handle: 'some-handle',
@@ -87,7 +87,7 @@ describe('verifyCredentials(email, password)', () => {
     /* Setup */
     const email = 'some@email.com';
     const plainTextPassword = 'plain-text-password';
-    const testUser: Partial<User> = {
+    const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
       email,
       handle: 'some-handle',
