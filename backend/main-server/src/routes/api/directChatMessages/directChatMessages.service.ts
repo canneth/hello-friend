@@ -23,6 +23,12 @@ export async function getDirectChatMessagesInvolvingUser(userId: User['userId'])
 }
 
 export async function getLatestDirectChatMessagesInvolvingUser(userId: User['userId']) {
-  const queryResult = await knexClient<DirectChatMessage>('DirectChatMessage').select('*').distinctOn('senderUserId', 'receiverUserId').where('senderUserId', userId).or.where('receiverUserId', userId).orderBy('dtmPosted', 'desc');
+  const queryResult = await (
+    knexClient<DirectChatMessage>('DirectChatMessage')
+      .select('*').distinctOn('senderUserId', 'receiverUserId')
+      .where('senderUserId', userId).or.where('receiverUserId', userId)
+      .orderBy(['senderUserId', 'receiverUserId'])
+      .orderBy('dtmPosted', 'desc')
+  );
   return queryResult;
 }
