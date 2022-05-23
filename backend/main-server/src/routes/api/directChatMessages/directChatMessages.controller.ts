@@ -4,24 +4,27 @@ import User from '@src/database/schemas/User';
 import { getDirectChatMessagesInvolvingUser, getLatestDirectChatMessagesInvolvingUser } from './directChatMessages.service';
 
 export const getDirectChatMessagesController: RequestHandler<
+  {},
+  {},
+  {},
   {
-    userId?: User['userId'];
+    involvedUserId?: User['userId'];
     latest?: string;
   }
 > = async (req, res) => {
 
-  const userId = req.params.userId;
-  const latest = req.params.latest && (req.params.latest === 'false' ? false : true); // Expected to be a boolean
+  const involvedUserId = req.query.involvedUserId;
+  const latest = req.query.latest && (req.query.latest === 'false' ? false : true); // Expected to be a boolean
 
-  if (!userId) return res.status(400).send('userId query param is required!');
+  if (!involvedUserId) return res.status(400).send('involvedUserId query param is required!');
 
   // TODO: Guard this controller against unauthorised access!
 
   if (latest) {
-    const latestDirectChatMessagesInvolvingUser = await getLatestDirectChatMessagesInvolvingUser(userId);
+    const latestDirectChatMessagesInvolvingUser = await getLatestDirectChatMessagesInvolvingUser(involvedUserId);
     return res.status(200).send(latestDirectChatMessagesInvolvingUser);
   } else {
-    const directChatMessagesInvolvingUser = await getDirectChatMessagesInvolvingUser(userId);
+    const directChatMessagesInvolvingUser = await getDirectChatMessagesInvolvingUser(involvedUserId);
     return res.status(200).send(directChatMessagesInvolvingUser);
   }
 };
