@@ -15,7 +15,8 @@ const props = defineProps<{
     <div :class="$style.avatarContainer">
       <img
         :class="$style.avatarImg"
-        :src="avatarSrc ?? 'placeholder-avatar.png'" />
+        :src="avatarSrc ?? 'placeholder-avatar.png'"
+        object-fit="cover" />
     </div>
   </button>
 </template>
@@ -47,6 +48,7 @@ const props = defineProps<{
 }
 .avatarImg {
   position: relative;
+  width: 100%;
   height: 100%;
 }
 
