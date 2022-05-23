@@ -28,18 +28,22 @@ export const getAllMatchingUsersController: RequestHandler<
   {},
   {},
   {
-    userIds?: User['userId'][];
-    fields?: (keyof User)[];
+    userIds?: string;
+    fields?: string;
   }
 > = async (req, res) => {
 
-  const userIds = req.query.userIds;
-  const fields = req.query.fields;
+  const userIds = req.query.userIds?.split(',') as User['userId'][];
+  const fields = req.query.fields?.split(',') as (keyof User)[];
 
   if (!userIds && !fields) return res.status(400).send('No query params provided!');
 
-  const matchingUserList = await getAllMatchingUsers(userIds, fields);
-  matchingUserList.forEach(user => censorUser(user));
-
-  return res.status(200).send(matchingUserList);
+  try {
+    const matchingUserList = await getAllMatchingUsers(userIds, fields);
+    matchingUserList.forEach(user => censorUser(user));
+    return res.status(200).send(matchingUserList);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send('Failed to fetch matching users!');
+  }
 };
