@@ -1,7 +1,7 @@
 
 import { RequestHandler } from 'express';
 import User from '@root/src/database/schemas/User';
-import { getUserById } from './users.service';
+import { getAllMatchingUsers, getUserById } from './users.service';
 import { censorUser } from './users.utils';
 
 export const getUserController: RequestHandler<
@@ -21,4 +21,25 @@ export const getUserController: RequestHandler<
     console.log(err);
     return res.status(500).send('Error occured when fetching user!');
   }
+};
+
+export const getAllMatchingUsersController: RequestHandler<
+  {},
+  {},
+  {},
+  {
+    userIds?: User['userId'][];
+    fields?: (keyof User)[];
+  }
+> = async (req, res) => {
+
+  const userIds = req.query.userIds;
+  const fields = req.query.fields;
+
+  if (!userIds && !fields) return res.status(400).send('No query params provided!');
+
+  const matchingUserList = await getAllMatchingUsers(userIds, fields);
+  matchingUserList.forEach(user => censorUser(user));
+
+  return res.status(200).send(matchingUserList);
 };

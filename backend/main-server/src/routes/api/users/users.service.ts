@@ -16,6 +16,15 @@ export async function getUserByEmail(email: User['email']) {
   return user;
 }
 
+export async function getAllMatchingUsers(userIds?: User['userId'][], returnFields?: (keyof User)[]) {
+  if (!userIds) {
+    const queryResult: Partial<User>[] = await knexClient<User>('User').select(returnFields ?? '*');
+    return queryResult;
+  }
+  const queryResult: Partial<User>[] = await knexClient<User>('User').select(returnFields ?? '*').whereIn('userId', userIds);
+  return queryResult;
+}
+
 export async function addNewUser(user: Partial<User> & { email: User['email'], password: User['password'] }) {
   const userToAdd: User = {
     userId: user.userId ?? uuid(),
