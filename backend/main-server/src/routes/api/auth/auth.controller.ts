@@ -9,7 +9,7 @@ import User from '@src/database/schemas/User';
 export const loginController: RequestHandler<
   {}, // Params dictionary
   {}, // Res body
-  { email?: User['email'], password?: User['password'] } // Req body
+  { email?: User['email']; password?: User['password'] } // Req body
 > = async (req, res) => {
 
   const email = req.body.email;

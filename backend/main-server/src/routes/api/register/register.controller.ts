@@ -7,7 +7,7 @@ import User from '@root/src/database/schemas/User';
 export const registerController: RequestHandler<
   {},
   {},
-  { email?: User['email'], password?: User['password'] }
+  { email?: User['email']; password?: User['password'] }
 > = async (req, res) => {
 
   const email = req.body.email;
