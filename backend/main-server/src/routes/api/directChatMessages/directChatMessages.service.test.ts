@@ -117,7 +117,7 @@ describe('getDirectChatMessagesInvolvingUser(userId)', () => {
 });
 
 describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
-  it('returns a list of all messages where each message is the latest received/sent by the user in their respective chats', async () => {
+  it('returns a list of all messages where each message is the latest in their respective chats involving the user', async () => {
     /* Setup */
     const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
@@ -220,9 +220,8 @@ describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
     /* Test */
     directChatMessages.forEach(record => delete record.dtmPosted);
     const comparator = (a: DirectChatMessage, b: DirectChatMessage) => a.directChatMessageId.localeCompare(b.directChatMessageId);
-    const sortedExpected = [latestMessageSentByUser, latestMessageReceivedByUser].sort(comparator);
     const sortedResult = directChatMessages.sort(comparator);
-    expect(sortedResult).toEqual(sortedExpected);
+    expect(sortedResult).toEqual([latestMessageReceivedByUser]);
   });
   it('returns [] if no matching records exist', async () => {
     /* Setup */
