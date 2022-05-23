@@ -30,12 +30,11 @@ export async function getLatestDirectChatMessagesInvolvingUser(userId: User['use
       .orderBy(['senderUserId', 'receiverUserId'])
       .orderBy('dtmPosted', 'desc')
   );
-  const senderUserIds = new Set<User['userId']>();
-  const receiverUserIds = new Set<User['userId']>();
+  const userIdPairs = new Set<string>();
   const result = queryResult.filter(message => {
-    if (senderUserIds.has(message.receiverUserId) || receiverUserIds.has(message.senderUserId)) return false;
-    senderUserIds.add(message.senderUserId);
-    receiverUserIds.add(message.receiverUserId);
+    if (userIdPairs.has(`${message.senderUserId}|${message.receiverUserId}`)) return false;
+    userIdPairs.add(`${message.senderUserId}|${message.receiverUserId}`);
+    userIdPairs.add(`${message.receiverUserId}|${message.senderUserId}`);
     return true;
   });
   return result;
