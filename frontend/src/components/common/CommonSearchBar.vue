@@ -44,8 +44,8 @@ function focusOutHandlerInput(e: FocusEvent) {
   display: flex;
   width: 30px;
   aspect-ratio: 1 / 1;
-  color: var(--color-secondary-base);
-  opacity: 0.5;
+  color: var(--color-body);
+  opacity: 0.2;
 }
 .input {
   position: relative;

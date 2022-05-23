@@ -12,13 +12,6 @@ const displayName = computed(() => {
 
 const searchBarHasFocus = ref(false);
 
-function focusInHandlerSearchBar() {
-  searchBarHasFocus.value = true;
-}
-function focusOutHandlerSearchBar() {
-  searchBarHasFocus.value = false;
-}
-
 </script>
 
 <template>
@@ -34,7 +27,7 @@ function focusOutHandlerSearchBar() {
           {{ displayName }}
         </p>
       </div>
-      <CommonSearchBar :class="[$style.searchBar, searchBarHasFocus && $style.hasFocus]" @focus-in="focusInHandlerSearchBar" @focus-out="focusOutHandlerSearchBar" />
+      <CommonSearchBar :class="[$style.searchBar, searchBarHasFocus && $style.hasFocus]" />
     </header>
   </div>
 </template>
@@ -77,7 +70,6 @@ function focusOutHandlerSearchBar() {
   height: auto;
 }
 .displayName {
-  /* font-weight: bold; */
   color: var(--color-body);
 }
 .searchBar {
@@ -85,12 +77,8 @@ function focusOutHandlerSearchBar() {
   width: 100%;
   background-color: var(--color-contrast-light);
   caret-color: var(--color-primary-base);
-  color: var(--color-secondary-base);
-  /* border: 2px solid transparent; */
+  color: var(--color-body);
   transition: border-color 100ms ease-out;
   font-size: var(--font-size-small);
-}
-.searchBar.hasFocus {
-  /* border-color: var(--color-secondary-base); */
 }
 </style>
