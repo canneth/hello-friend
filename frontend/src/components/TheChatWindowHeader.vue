@@ -29,6 +29,7 @@ const props = defineProps<{
 .overallContainer {
   position: relative;
   display: flex;
+  width: 100%;
   padding: 12px 20px;
 }
 .overallContainer::before {
