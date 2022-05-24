@@ -1,7 +1,12 @@
 
-import User from '@src/database/schemas/User';
 import knexClient from '@src/database/client';
 import { getUserByEmail, getUserById } from './users.service';
+import User from '@src/database/schemas/User';
+import emptyDatabase from '@src/database/utils/emptyDatabase';
+
+beforeAll(async () => {
+  emptyDatabase();
+});
 
 describe('getUserById(user)', () => {
   it('if the corresponding user exists in the database, returns the user', async () => {
@@ -14,7 +19,6 @@ describe('getUserById(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
@@ -37,7 +41,6 @@ describe('getUserById(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
 
     /* Execute */
     const retrievedUser = await getUserById(testUser.userId!);
@@ -58,7 +61,6 @@ describe('getUserByEmail(email)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
@@ -81,7 +83,6 @@ describe('getUserByEmail(email)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
 
     /* Execute */
     const retrievedUser = await getUserByEmail(testUser.email!);
@@ -102,7 +103,6 @@ describe('addNewUser(user)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
 
     /* Execute */
     const queryResult = await knexClient<User>('User').insert(testUser).returning(Object.keys(testUser));

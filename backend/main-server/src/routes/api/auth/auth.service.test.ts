@@ -4,7 +4,11 @@ import bcrypt from 'bcrypt';
 import knexClient from '@src/database/client';
 import { decodeAccessToken, generateAccessToken, verifyCredentials } from './auth.service';
 import User from '@src/database/schemas/User';
+import emptyDatabase from '@src/database/utils/emptyDatabase';
 
+beforeAll(() => {
+  emptyDatabase();
+});
 
 describe('generateAccessToken(userId)', () => {
   it('returns a JWT whose payload contains userId', () => {
@@ -51,7 +55,6 @@ describe('verifyCredentials(email, password)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
@@ -67,15 +70,6 @@ describe('verifyCredentials(email, password)', () => {
     /* Setup */
     const email = 'some@email.com';
     const plainTextPassword = 'plain-text-password';
-    const testUser: User = {
-      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
-      email,
-      handle: 'some-handle',
-      password: await bcrypt.hash(plainTextPassword, 10),
-      name: 'Some Name',
-      avatarSrc: 'some-url'
-    }
-    await knexClient<User>('User').delete();
 
     /* Execute */
     const verificationPassed = await verifyCredentials(email, plainTextPassword);
@@ -95,7 +89,6 @@ describe('verifyCredentials(email, password)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     }
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert(testUser);
 
     /* Execute */
