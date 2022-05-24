@@ -31,7 +31,14 @@ export const getDirectChatMessagesController: RequestHandler<
     }
     if (betweenUserIds) {
       const directChatMessagesList = await getAllDirectChatMessagesBetweenUsers(betweenUserIds[0], betweenUserIds[1]);
-      return res.status(200).send(directChatMessagesList);
+      const chronologicalMessageList = directChatMessagesList.sort((a, b) => {
+        if (!a.dtmPosted || !b.dtmPosted) return 0;
+        const aDate = (new Date(a.dtmPosted)).getTime();
+        const bDate = (new Date(b.dtmPosted)).getTime();
+        if (aDate < bDate) return 1;
+        return 1;
+      });
+      return res.status(200).send([directChatMessagesList[0]]);
     }
   } else {
     if (involvedUserId) {
@@ -39,7 +46,8 @@ export const getDirectChatMessagesController: RequestHandler<
       return res.status(200).send(directChatMessagesList);
     }
     if (betweenUserIds) {
-
+      const directChatMessagesList = await getAllDirectChatMessagesBetweenUsers(betweenUserIds[0], betweenUserIds[1]);
+      return res.status(200).send(directChatMessagesList);
     }
   }
 };
