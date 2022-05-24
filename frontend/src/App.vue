@@ -149,7 +149,7 @@ router.beforeEach((to, from) => {
 
   /* Scrollbar styling for Firefox */
   scrollbar-width: thin;
-  scrollbar-color: var(--color-grey-light) var(--color-grey-offwhite);
+  scrollbar-color: var(--color-background) var(--color-contrast-light);
 }
 
 /* Scrollbar styling for Chrome, Edge, and Safari */
@@ -157,14 +157,14 @@ router.beforeEach((to, from) => {
   width: 8px;
 }
 *::-webkit-scrollbar-track {
-  background: var(--color-grey-offwhite);
+  background-color: var(--color-background);
 }
 *::-webkit-scrollbar-thumb {
-  background-color: var(--color-grey-light);
+  background-color: var(--color-contrast-light);
   border-radius: 4px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-grey-base);
+  background-color: var(--color-primary-base);
 }
 
 body {
