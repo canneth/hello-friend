@@ -51,6 +51,35 @@ function validateInputOfField(fieldName: keyof typeof formValuesRef.value) {
   }
 }
 
+async function submitForm() {
+  for (const field of Object.keys(formValuesRef.value) as (keyof typeof formValuesRef.value)[]) validateInputOfField(field);
+  if (Object.values(formErrorsRef.value).some(errorMessage => errorMessage === undefined || errorMessage !== null)) return;
+  try {
+    if (props.type === 'register') await backendAxios.post('/api/register', formValuesRef.value);
+    const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValuesRef.value);
+    localStorage.setItem(LS_LOGGED_IN_USER_KEY_NAME, userId);
+    const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${userId}`);
+    userStore.value.setUser(user);
+    router.replace(uiStore.value.lastPathVisitedBeforeLogin);
+  } catch (err) {
+    console.log(err);
+    if (!axios.isAxiosError(err)) return;
+    if (!err.response) return;
+    switch (props.type) {
+      case 'register': {
+        if (err.response.status === 409) formErrorsRef.value.email = 'A user with that email already exists';
+        break;
+      }
+      case 'login': {
+        if (err.response.status === 401) {
+          formErrorsRef.value.email = 'Email or password may be incorrect';
+          formErrorsRef.value.password = 'Email or password may be incorrect';
+        }
+      }
+    }
+  }
+}
+
 /* Props into title */
 
 const titleText = computed(() => {
@@ -99,34 +128,9 @@ const submitButtonText = computed(() => {
   }
 });
 
-async function clickHandlerSubmitButton(e: MouseEvent) {
+function clickHandlerSubmitButton(e: MouseEvent) {
   e.preventDefault();
-  for (const field of Object.keys(formValuesRef.value) as (keyof typeof formValuesRef.value)[]) validateInputOfField(field);
-  if (Object.values(formErrorsRef.value).some(errorMessage => errorMessage === undefined || errorMessage !== null)) return;
-  try {
-    if (props.type === 'register') await backendAxios.post('/api/register', formValuesRef.value);
-    const { data: { userId } } = await backendAxios.post<{ userId: User['userId'] }>('/api/auth/login', formValuesRef.value);
-    localStorage.setItem(LS_LOGGED_IN_USER_KEY_NAME, userId);
-    const { data: { user } } = await backendAxios.get<{ user: LoggedInUser }>(`/api/users/${userId}`);
-    userStore.value.setUser(user);
-    router.replace(uiStore.value.lastPathVisitedBeforeLogin);
-  } catch (err) {
-    console.log(err);
-    if (!axios.isAxiosError(err)) return;
-    if (!err.response) return;
-    switch (props.type) {
-      case 'register': {
-        if (err.response.status === 409) formErrorsRef.value.email = 'A user with that email already exists';
-        break;
-      }
-      case 'login': {
-        if (err.response.status === 401) {
-          formErrorsRef.value.email = 'Email or password may be incorrect';
-          formErrorsRef.value.password = 'Email or password may be incorrect';
-        }
-      }
-    }
-  }
+  submitForm();
 }
 
 </script>
@@ -136,7 +140,7 @@ async function clickHandlerSubmitButton(e: MouseEvent) {
     <h1 :class="$style.title">
       {{ titleText }}
     </h1>
-    <form :class="$style.form">
+    <form :class="$style.form" @keyup.enter="submitForm">
       <div :class="[
         $style.fieldContainer,
         formErrorsRef.email === null && $style.validInput,
