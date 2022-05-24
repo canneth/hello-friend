@@ -1,27 +1,170 @@
 
 
 import knexClient from '@src/database/client';
+import { getAllDirectChatMessagesBetweenUsers, getDirectChatMessagesInvolvingUser, getLatestDirectChatMessagesInvolvingUser } from './directChatMessages.service';
 import DirectChatMessage from '@src/database/schemas/DirectChatMessage';
 import User from '@src/database/schemas/User';
-import { getDirectChatMessagesInvolvingUser, getLatestDirectChatMessagesInvolvingUser } from './directChatMessages.service';
+import emptyDatabase from '@src/database/utils/emptyDatabase';
 
-// describe('getAllDirectChatMessagesSentBy(senderUserId)', () => {
-//   it('', () => {
-//   });
-// });
+beforeAll(async () => {
+  emptyDatabase();
+});
 
-// describe('getAllDirectChatMessagesReceivedBy(receiverUserId)', () => {
-//   it('', () => {
-//   });
-// });
+describe('getAllDirectChatMessagesBetweenUsers(userOneId, userTwoId)', () => {
+  it('returns all messages, from the DirectChatMessage table, exchanged between the two users', async () => {
+    const testUserOne: User = {
+      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
+      email: 'some@email',
+      handle: 'some-handle',
+      password: 'some-password',
+      name: 'Some Name',
+      avatarSrc: 'some-url'
+    };
+    const testUserTwo: User = {
+      userId: 'c39f9175-0c16-4ca7-a230-d8f03ba22705',
+      email: 'some-other@email',
+      handle: 'some-other-handle',
+      password: 'some-other-password',
+      name: 'Some Other Name',
+      avatarSrc: 'some-other-url'
+    };
+    const unrelatedSender: User = {
+      userId: '9a704774-7889-45b3-aa5a-9749430055d5',
+      email: 'unrelated-sender@email',
+      handle: 'unrelated-sender-handle',
+      password: 'unrelated-sender-password',
+      name: 'Unrelated Sender',
+      avatarSrc: 'unrelated-sender-url'
+    };
+    const unrelatedReceiver: User = {
+      userId: '04d33a2e-950b-495b-bf85-09ae349e5889',
+      email: 'unrelated-receiver@email',
+      handle: 'unrelated-receiver-handle',
+      password: 'unrelated-receiver-password',
+      name: 'Unrelated Receiver',
+      avatarSrc: 'unrelated-receiver-url'
+    };
+    const messagesFromOneToTwo: DirectChatMessage[] = [
+      {
+        directChatMessageId: '833861b2-9e76-4319-9176-0fabb95c2905',
+        content: 'I am the FIRST MESSAGE sent from testUserOne to testUserTwo!',
+        senderUserId: testUserOne.userId,
+        receiverUserId: testUserTwo.userId
+      },
+      {
+        directChatMessageId: 'c026fab7-7812-40b7-90f0-46736ebdd0f9',
+        content: 'I am the SECOND MESSAGE sent from testUserOne to testUserTwo!',
+        senderUserId: testUserOne.userId,
+        receiverUserId: testUserTwo.userId
+      },
+      {
+        directChatMessageId: 'b9b87593-0559-4940-b42d-fe31dc228023',
+        content: 'I am the LATEST MESSAGE sent from testUserOne to testUserTwo!',
+        senderUserId: testUserOne.userId,
+        receiverUserId: testUserTwo.userId
+      }
+    ];
+    const messagesFromTwoToOne: DirectChatMessage[] = [
+      {
+        directChatMessageId: '49b54e65-3d4c-46c4-a9c4-55a9a657a952',
+        content: 'I am the FIRST MESSAGE sent from testUserTwo to testUserOne!',
+        senderUserId: testUserTwo.userId,
+        receiverUserId: testUserOne.userId
+      },
+      {
+        directChatMessageId: '72d25459-17d1-4a53-b1e5-72051272ab23',
+        content: 'I am the SECOND MESSAGE sent from testUserTwo to testUserOne!',
+        senderUserId: testUserTwo.userId,
+        receiverUserId: testUserOne.userId
+      },
+      {
+        directChatMessageId: 'e74b6a74-88b1-432e-896e-bbffdfa1e468',
+        content: 'I am the LATEST MESSAGE sent from testUserTwo to testUserOne!',
+        senderUserId: testUserTwo.userId,
+        receiverUserId: testUserOne.userId
+      }
+    ];
+    const unrelatedMessage: DirectChatMessage = {
+      directChatMessageId: '24490d74-f74e-49b4-8ff4-05754d7b8dac',
+      content: 'I am a COMPLETE UNRELATED message and should not be showing up!',
+      senderUserId: unrelatedSender.userId,
+      receiverUserId: unrelatedReceiver.userId
+    };
+    await knexClient<User>('User').insert([testUserOne, testUserTwo, unrelatedSender, unrelatedReceiver]);
+    await knexClient<DirectChatMessage>('DirectChatMessage').insert([...messagesFromOneToTwo, ...messagesFromTwoToOne, unrelatedMessage]);
 
-// describe('getAllDirectChatMessagesBetweenUsers(senderUserId, receiverUserId)', () => {
-//   it('', () => {
-//   });
-// });
+    /* Execute */
+    const directChatMessages = await getAllDirectChatMessagesBetweenUsers(testUserOne.userId, testUserTwo.userId);
+
+    /* Cleanup */
+    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
+    await knexClient<User>('User').delete();
+
+    /* Test */
+    directChatMessages.forEach(record => delete record.dtmPosted);
+    const comparator = (a: DirectChatMessage, b: DirectChatMessage) => a.directChatMessageId.localeCompare(b.directChatMessageId);
+    const sortedExpected = [...messagesFromOneToTwo, ...messagesFromTwoToOne].sort(comparator);
+    const sortedResult = directChatMessages.sort(comparator);
+    expect(sortedResult).toEqual(sortedExpected);
+  });
+  it('returns [] if there are no such messages', async () => {
+    /* Setup */
+    const testUserOne: User = {
+      userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
+      email: 'some@email',
+      handle: 'some-handle',
+      password: 'some-password',
+      name: 'Some Name',
+      avatarSrc: 'some-url'
+    };
+    const testUserTwo: User = {
+      userId: 'c39f9175-0c16-4ca7-a230-d8f03ba22705',
+      email: 'some-other@email',
+      handle: 'some-other-handle',
+      password: 'some-other-password',
+      name: 'Some Other Name',
+      avatarSrc: 'some-other-url'
+    };
+    const unrelatedSender: User = {
+      userId: '9a704774-7889-45b3-aa5a-9749430055d5',
+      email: 'unrelated-sender@email',
+      handle: 'unrelated-sender-handle',
+      password: 'unrelated-sender-password',
+      name: 'Unrelated Sender',
+      avatarSrc: 'unrelated-sender-url'
+    };
+    const unrelatedReceiver: User = {
+      userId: '04d33a2e-950b-495b-bf85-09ae349e5889',
+      email: 'unrelated-receiver@email',
+      handle: 'unrelated-receiver-handle',
+      password: 'unrelated-receiver-password',
+      name: 'Unrelated Receiver',
+      avatarSrc: 'unrelated-receiver-url'
+    };
+    const unrelatedMessage: DirectChatMessage = {
+      directChatMessageId: '24490d74-f74e-49b4-8ff4-05754d7b8dac',
+      content: 'I am a COMPLETE UNRELATED message and should not be showing up!',
+      senderUserId: unrelatedSender.userId,
+      receiverUserId: unrelatedReceiver.userId
+    };
+    await knexClient<User>('User').insert([testUserOne, testUserTwo, unrelatedSender, unrelatedReceiver]);
+    await knexClient<DirectChatMessage>('DirectChatMessage').insert(unrelatedMessage);
+
+    /* Execute */
+    const directChatMessages = await getAllDirectChatMessagesBetweenUsers(testUserOne.userId, testUserTwo.userId);
+
+    /* Cleanup */
+    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
+    await knexClient<User>('User').delete();
+
+    /* Test */
+    directChatMessages.forEach(record => delete record.dtmPosted);
+    expect(directChatMessages).toEqual([]);
+  });
+});
 
 describe('getDirectChatMessagesInvolvingUser(userId)', () => {
-  it('returns all records from the DirectChatMessage table where the specified user is either the sender or receiver', async () => {
+  it('returns all messages from the DirectChatMessage table where the specified user is either the sender or receiver', async () => {
     /* Setup */
     const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
@@ -74,9 +217,6 @@ describe('getDirectChatMessagesInvolvingUser(userId)', () => {
       senderUserId: unrelatedSender.userId,
       receiverUserId: unrelatedReceiver.userId
     };
-
-    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert([testUser, otherUser, unrelatedSender, unrelatedReceiver]);
     await knexClient<DirectChatMessage>('DirectChatMessage').insert([messageSentByUser, messageReceivedByUser, unrelatedMessage]);
 
@@ -94,7 +234,7 @@ describe('getDirectChatMessagesInvolvingUser(userId)', () => {
     const sortedResult = directChatMessages.sort(comparator);
     expect(sortedResult).toEqual(sortedExpected);
   });
-  it('returns [] if no matching records exist', async () => {
+  it('returns [] if no matching messages exist', async () => {
     /* Setup */
     const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
@@ -104,11 +244,37 @@ describe('getDirectChatMessagesInvolvingUser(userId)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     };
-    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
-    await knexClient<User>('User').delete();
+    const unrelatedSender: User = {
+      userId: '9a704774-7889-45b3-aa5a-9749430055d5',
+      email: 'unrelated-sender@email',
+      handle: 'unrelated-sender-handle',
+      password: 'unrelated-sender-password',
+      name: 'Unrelated Sender',
+      avatarSrc: 'unrelated-sender-url'
+    };
+    const unrelatedReceiver: User = {
+      userId: '04d33a2e-950b-495b-bf85-09ae349e5889',
+      email: 'unrelated-receiver@email',
+      handle: 'unrelated-receiver-handle',
+      password: 'unrelated-receiver-password',
+      name: 'Unrelated Receiver',
+      avatarSrc: 'unrelated-receiver-url'
+    };
+    const unrelatedMessage: DirectChatMessage = {
+      directChatMessageId: '24490d74-f74e-49b4-8ff4-05754d7b8dac',
+      content: 'I am a COMPLETE UNRELATED message and should not be showing up!',
+      senderUserId: unrelatedSender.userId,
+      receiverUserId: unrelatedReceiver.userId
+    };
+    await knexClient<User>('User').insert([testUser, unrelatedSender, unrelatedReceiver]);
+    await knexClient<DirectChatMessage>('DirectChatMessage').insert(unrelatedMessage);
 
     /* Execute */
     const directChatMessages = await getDirectChatMessagesInvolvingUser(testUser.userId);
+
+    /* Cleanup */
+    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
+    await knexClient<User>('User').delete();
 
     /* Test */
     directChatMessages.forEach(record => delete record.dtmPosted);
@@ -200,9 +366,6 @@ describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
       senderUserId: unrelatedSender.userId,
       receiverUserId: unrelatedReceiver.userId
     };
-
-    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
-    await knexClient<User>('User').delete();
     await knexClient<User>('User').insert([testUser, otherUser, unrelatedSender, unrelatedReceiver]);
     const messagesToInsert = [...messagesSentByUser, ...messagesReceivedByUser, unrelatedMessage];
     for (const message of messagesToInsert) {
@@ -223,7 +386,7 @@ describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
     const sortedResult = directChatMessages.sort(comparator);
     expect(sortedResult).toEqual([latestMessageReceivedByUser]);
   });
-  it('returns [] if no matching records exist', async () => {
+  it('returns [] if no matching messages exist', async () => {
     /* Setup */
     const testUser: User = {
       userId: 'fc72363c-4d5e-4884-9241-545e911049e8',
@@ -233,11 +396,37 @@ describe('getLatestDirectChatMessagesInvolvingUser(userId)', () => {
       name: 'Some Name',
       avatarSrc: 'some-url'
     };
-    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
-    await knexClient<User>('User').delete();
+    const unrelatedSender: User = {
+      userId: '9a704774-7889-45b3-aa5a-9749430055d5',
+      email: 'unrelated-sender@email',
+      handle: 'unrelated-sender-handle',
+      password: 'unrelated-sender-password',
+      name: 'Unrelated Sender',
+      avatarSrc: 'unrelated-sender-url'
+    };
+    const unrelatedReceiver: User = {
+      userId: '04d33a2e-950b-495b-bf85-09ae349e5889',
+      email: 'unrelated-receiver@email',
+      handle: 'unrelated-receiver-handle',
+      password: 'unrelated-receiver-password',
+      name: 'Unrelated Receiver',
+      avatarSrc: 'unrelated-receiver-url'
+    };
+    const unrelatedMessage: DirectChatMessage = {
+      directChatMessageId: '24490d74-f74e-49b4-8ff4-05754d7b8dac',
+      content: 'I am a COMPLETE UNRELATED message and should not be showing up!',
+      senderUserId: unrelatedSender.userId,
+      receiverUserId: unrelatedReceiver.userId
+    };
+    await knexClient<User>('User').insert([testUser, unrelatedSender, unrelatedReceiver]);
+    await knexClient<DirectChatMessage>('DirectChatMessage').insert(unrelatedMessage);
 
     /* Execute */
     const directChatMessages = await getLatestDirectChatMessagesInvolvingUser(testUser.userId);
+
+    /* Cleanup */
+    await knexClient<DirectChatMessage>('DirectChatMessage').delete();
+    await knexClient<User>('User').delete();
 
     /* Test */
     directChatMessages.forEach(record => delete record.dtmPosted);
