@@ -171,6 +171,10 @@ body {
   background-color: var(--color-background);
 }
 
+h1 {
+  color: var(--color-body);
+}
+
 p {
   color: var(--color-body);
   font-size: var(--font-size-regular);
