@@ -38,7 +38,7 @@ export const getDirectChatMessagesController: RequestHandler<
         if (aDate < bDate) return 1;
         return 1;
       });
-      return res.status(200).send([directChatMessagesList[0]]);
+      return res.status(200).send([chronologicalMessageList[0]]);
     }
   } else {
     if (involvedUserId) {
