@@ -7,6 +7,7 @@ import ChatListing from '@/components/chat/ChatListing.vue';
 import backendAxios from '@/globals/configuredAxios';
 import type DirectChatMessage from '@/schemas/DirectChatMessage';
 import type User from '@/schemas/User';
+import useUIStore from '@/composables/useUIStore';
 
 const userStore = useUserStore();
 
@@ -14,7 +15,10 @@ const displayName = computed(() => {
   return userStore.value.user?.name.split(' ')[0];
 });
 
+/* Load chats */
+
 const directChatList = ref<{
+  chatId: string;
   chatName: User['name'];
   avatarSrc: User['avatarSrc'];
   lastMessage: DirectChatMessage;
@@ -40,18 +44,34 @@ const directChatList = ref<{
     `.replace(/\s/g, '')
   );
   directChatList.value = (directChatMessageList.map(message => {
+    const chatId = [message.senderUserId, message.receiverUserId].sort((a, b) => a.localeCompare(b)).join(',');
     const chatPartner = directChatPartnerList.find(chatPartner => chatPartner.userId === message.receiverUserId || chatPartner.userId === message.senderUserId)!;
     return {
+      chatId,
       chatName: chatPartner.name,
       avatarSrc: chatPartner.avatarSrc,
       lastMessage: message
     };
   }));
-  console.log('directChatMessageList', directChatMessageList);
-  console.log('directChatPartnerUserIdList', directChatPartnerUserIdList);
-  console.log('directChatPartnerList', directChatPartnerList);
-  console.log(directChatList.value.map(chat => chat.chatName));
 })();
+
+/* Selecting active chat */
+
+const uiStore = useUIStore();
+
+function clickHandlerChatListing(e: MouseEvent, id: string) {
+  e.preventDefault();
+  const selectedChat = directChatList.value.find(chatListing => chatListing.chatId === id);
+  if (!selectedChat) throw new Error('No such chat exists with that chatId!');
+  if (selectedChat.chatId === uiStore.value.activeChat?.chatId) return;
+  const activeChat = {
+    chatId: selectedChat.chatId,
+    chatName: selectedChat.chatName,
+    chatAvatar: selectedChat.avatarSrc,
+    participantIds: [selectedChat.lastMessage.senderUserId, selectedChat.lastMessage.receiverUserId]
+  };
+  uiStore.value.setActiveChat(activeChat);
+}
 
 </script>
 
@@ -72,7 +92,14 @@ const directChatList = ref<{
       <CommonSearchBar :class="$style.searchBar" />
     </header>
     <div :class="$style.chatListContainer">
-      <ChatListing v-for="{ chatName, lastMessage, avatarSrc } in directChatList" :chat-name="chatName" :last-message="lastMessage" :avatar-src="avatarSrc" />
+      <ChatListing
+        v-for="{ chatId, chatName, lastMessage, avatarSrc } in directChatList"
+        :key="chatId"
+        :chat-id="chatId"
+        :chat-name="chatName"
+        :last-message="lastMessage"
+        :avatar-src="avatarSrc"
+        @click="clickHandlerChatListing" />
     </div>
   </div>
 </template>
@@ -94,9 +121,18 @@ const directChatList = ref<{
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  background-color: var(--color-primary-base);
   box-shadow: var(--box-shadow-standard);
   padding: 16px 20px;
+}
+.header::before {
+  position: absolute;
+  content: '';
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-body);
+  opacity: 0.05;
 }
 .profileBar {
   position: relative;
@@ -123,11 +159,20 @@ const directChatList = ref<{
 .searchBar {
   position: relative;
   width: 100%;
-  background-color: var(--color-contrast-light);
   caret-color: var(--color-primary-base);
   color: var(--color-body);
   transition: border-color 100ms ease-out;
   font-size: var(--font-size-small);
+}
+.searchBar::before {
+  position: absolute;
+  content: '';
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-body);
+  opacity: 0.05;
 }
 
 .chatListContainer {

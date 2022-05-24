@@ -32,12 +32,12 @@ function focusOutHandlerInput(e: FocusEvent) {
   position: relative;
   width: 200px;
   height: 40px;
-  background: var(--color-primary-base);
   border-radius: 7px;
   display: flex;
   align-items: center;
   padding: 5px 10px;
   gap: 10px;
+  overflow: clip;
 }
 .searchIconContainer {
   position: relative;

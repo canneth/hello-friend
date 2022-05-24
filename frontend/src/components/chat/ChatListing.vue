@@ -1,24 +1,34 @@
 <script setup lang="ts">
 
-import type DirectChatMessage from '@/schemas/DirectChatMessage';
 import { computed } from 'vue';
+import useUIStore from '@/composables/useUIStore';
+import type DirectChatMessage from '@/schemas/DirectChatMessage';
 
 const props = defineProps<{
+  chatId: string;
   chatName: string;
   avatarSrc: string | null;
   lastMessage: DirectChatMessage;
   lastMessageSentByUser?: boolean; // Controls whether message status indicator is displayed.
 }>()
 
+const emit = defineEmits<{
+  (eventName: 'click', e: MouseEvent, id: string): void;
+}>();
+
 const displayDate = computed(() => {
   const date = new Date(props.lastMessage.dtmPosted);
   return Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(date);
 });
 
+const uiStore = useUIStore();
+
+const isActiveChat = computed(() => uiStore.value.activeChat?.chatId === props.chatId);
+
 </script>
 
 <template>
-  <div :class="$style.overallContainer">
+  <div :class="[$style.overallContainer, isActiveChat && $style.isActiveChat]" @click="emit('click', $event, chatId)">
     <div :class="$style.avatarContainer">
       <img :class="$style.avatarImg" :src="avatarSrc ?? 'placeholder-avatar.png'" object-fit="cover" />
     </div>
@@ -51,6 +61,20 @@ const displayDate = computed(() => {
   justify-content: flex-start;
   padding: 10px 12px;
   gap: 10px;
+}
+.overallContainer::after {
+  position: absolute;
+  content: '';
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-primary-base);
+  opacity: 0;
+  transition: opacity 100ms ease-out;
+}
+.overallContainer.isActiveChat::after {
+  opacity: 0.05;
 }
 
 .avatarContainer {
@@ -114,5 +138,21 @@ const displayDate = computed(() => {
   font-size: var(--font-size-small);
   opacity: 0.6;
   width: 100%;
+}
+
+@media (hover: hover) {
+  .overallContainer:hover {
+    cursor: pointer;
+  }
+  .overallContainer:hover::after {
+    position: absolute;
+    content: '';
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-body);
+    opacity: 0.05;
+  }
 }
 </style>
