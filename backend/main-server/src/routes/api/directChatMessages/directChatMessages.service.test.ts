@@ -7,7 +7,7 @@ import User from '@src/database/schemas/User';
 import emptyDatabase from '@src/database/utils/emptyDatabase';
 
 beforeAll(async () => {
-  emptyDatabase();
+  await emptyDatabase();
 });
 
 describe('getAllDirectChatMessagesBetweenUsers(userOneId, userTwoId)', () => {

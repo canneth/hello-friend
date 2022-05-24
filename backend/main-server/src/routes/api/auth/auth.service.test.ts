@@ -6,8 +6,8 @@ import { decodeAccessToken, generateAccessToken, verifyCredentials } from './aut
 import User from '@src/database/schemas/User';
 import emptyDatabase from '@src/database/utils/emptyDatabase';
 
-beforeAll(() => {
-  emptyDatabase();
+beforeAll(async () => {
+  await emptyDatabase();
 });
 
 describe('generateAccessToken(userId)', () => {
