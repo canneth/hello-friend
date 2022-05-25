@@ -1,6 +1,6 @@
 
 import { RequestHandler } from 'express';
-import { getChatMessagesInChat } from './chatMessages.service';
+import { getAllChatMessagesInChats, getChatMessagesInChat } from './chatMessages.service';
 import Chat from '@src/database/schemas/Chat';
 
 export const getAllMatchingChatMessagesController: RequestHandler<
@@ -8,18 +8,18 @@ export const getAllMatchingChatMessagesController: RequestHandler<
   {},
   {},
   {
-    chatId?: string;
+    chatIds?: string;
     latest?: string;
   }
 > = async (req, res) => {
 
-  const chatId: Chat['chatId'] | undefined = req.query.chatId;
+  const chatIds: Chat['chatId'][] | undefined = req.query.chatIds?.split(',') as Chat['chatId'][];
   const latest: boolean = req.query.latest === 'true' ? true : false;
 
-  if (!chatId) return res.status(400).send('chatId query param must be specified!');
+  if (!chatIds) return res.status(400).send('chatIds query param must be specified!');
 
   try {
-    const matchingChatMessages = await getChatMessagesInChat(chatId, latest);
+    const matchingChatMessages = await getAllChatMessagesInChats(chatIds, latest);
     return res.status(200).send(matchingChatMessages);
   } catch (err) {
     console.log(err);
