@@ -25,13 +25,20 @@ export const getAllMatchingChatMembershipsController: RequestHandler<
   try {
     if (userIds) {
       const matchingChatMemberships = await getAllChatMembershipsOfUsers(userIds);
-      const filteredChatMemberships = matchingChatMemberships.filter(membership => !excludeUserIds.includes(membership.userId));
-      return res.status(200).send(filteredChatMemberships);
+      if (excludeUserIds) {
+        const filteredChatMemberships = matchingChatMemberships.filter(membership => !excludeUserIds.includes(membership.userId));
+        return res.status(200).send(filteredChatMemberships);
+      }
+      return res.status(200).send(matchingChatMemberships);
+
     }
     if (chatIds) {
       const matchingChatMemberships = await getAllChatMembershipsWithIds(chatIds);
-      const filteredChatMemberships = matchingChatMemberships.filter(membership => !excludeUserIds.includes(membership.userId));
-      return res.status(200).send(filteredChatMemberships);
+      if (excludeUserIds) {
+        const filteredChatMemberships = matchingChatMemberships.filter(membership => !excludeUserIds.includes(membership.userId));
+        return res.status(200).send(filteredChatMemberships);
+      }
+      return res.status(200).send(matchingChatMemberships);
     }
   } catch (err) {
     console.log(err);
