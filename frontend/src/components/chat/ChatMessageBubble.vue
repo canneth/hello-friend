@@ -23,7 +23,7 @@ const formattedTimestamp = computed(() => (
     $style.overallContainer,
     senderName && $style.isSent
   ]">
-    <h1 v-if="senderName">
+    <h1 v-if="senderName" :class="$style.senderName">
       {{ senderName }}
     </h1>
     <p :class="$style.content">
@@ -61,6 +61,12 @@ const formattedTimestamp = computed(() => (
   opacity: 0.15;
 }
 
+.senderName {
+  position: relative;
+  font-size: var(--font-size-regular);
+  color: var(--color-primary-base);
+  margin-bottom: 5px;
+}
 .content {
   position: relative;
   font-size: var(--font-size-small);
