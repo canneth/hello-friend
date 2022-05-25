@@ -9,7 +9,6 @@ As such, it is recommended to adhere to the order specified below when executing
 
 1) User.pgsql
 2) ContactListing.pgsql (References the User table)
-3) DirectChatMessage.pgsql (References the User table)
-4) GroupChat.pgsql
-5) GroupChatMembership.pgsql (References the GroupChat and User tables)
-6) GroupChatMessage.pgsql (References the GroupChat and User tables)
+3) Chat.pgsql
+4) ChatMembership.pgsql (References the Chat and User tables)
+5) ChatMessage.pgsql (References the Chat and User tables)
