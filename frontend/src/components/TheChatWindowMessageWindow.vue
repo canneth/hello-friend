@@ -47,6 +47,7 @@ watchEffect(async () => {
       dtmPosted
     };
   });
+  formattedMessages.value.sort((a, b) => (new Date(a.dtmPosted!)).getTime() - (new Date(b.dtmPosted!)).getTime());
 });
 
 </script>
@@ -70,6 +71,9 @@ watchEffect(async () => {
 <style module>
 .overallContainer {
   position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
   gap: 20px;
   width: 100%;
   height: 100%;
