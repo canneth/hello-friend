@@ -9,6 +9,5 @@ const rootPathProd = path.resolve(rootPath, 'build');
 console.log(process.env.NODE_ENV);
 
 moduleAlias.addAliases({
-  '@root': rootPath,
   '@src': process.env.NODE_ENV === 'development' ? rootPathDev : rootPathProd
 });
