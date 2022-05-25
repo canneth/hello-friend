@@ -2,13 +2,13 @@
 
 import { computed } from 'vue';
 import useUIStore from '@/composables/useUIStore';
-import type DirectChatMessage from '@/schemas/DirectChatMessage';
+import type ChatMessage from '@/schemas/ChatMessage';
 
 const props = defineProps<{
   chatId: string;
   chatName: string;
-  avatarSrc: string | null;
-  lastMessage: DirectChatMessage;
+  avatarSrc?: string;
+  latestMessage?: ChatMessage;
   lastMessageSentByUser?: boolean; // Controls whether message status indicator is displayed.
 }>()
 
@@ -17,8 +17,13 @@ const emit = defineEmits<{
 }>();
 
 const displayDate = computed(() => {
-  const date = new Date(props.lastMessage.dtmPosted);
+  if (!props.latestMessage?.dtmPosted) return null;
+  const date = new Date(props.latestMessage.dtmPosted);
   return Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(date);
+});
+const displayMessage = computed(() => {
+  if (!props.latestMessage) return 'No messages';
+  return props.latestMessage.content;
 });
 
 const uiStore = useUIStore();
@@ -46,7 +51,7 @@ const isActiveChat = computed(() => uiStore.value.activeChat?.chatId === props.c
           <!-- TODO -->
         </div>
         <p :class="$style.message">
-          {{ lastMessage.content }}
+          {{ displayMessage }}
         </p>
       </div>
     </div>

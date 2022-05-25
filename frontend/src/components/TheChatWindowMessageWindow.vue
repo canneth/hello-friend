@@ -1,57 +1,88 @@
 <script setup lang="ts">
 
-import { ref, watch, watchEffect } from 'vue';
-import type User from '@/schemas/User';
-import type DirectChatMessage from '@/schemas/DirectChatMessage';
-import backendAxios from '@/globals/configuredAxios';
-import ChatMessage from './chat/ChatMessage.vue';
+import { computed, ref, watchEffect } from 'vue';
+import type ChatMessage from '@/schemas/ChatMessage';
+import ChatMessageBubble, { type ChatMessageBubbleProps } from './chat/ChatMessageBubble.vue';
 import useUserStore from '@/composables/useUserStore';
+import backendAxios from '@/globals/configuredAxios';
+import useUIStore from '@/composables/useUIStore';
+import type ChatMembership from '@/schemas/ChatMembership';
+import type User from '@/schemas/User';
 
 const props = defineProps<{
-  participantIds: User['userId'][];
+  messages: ChatMessage[];
 }>();
 
-const messageList = ref<DirectChatMessage[]>([]);
+const userStore = useUserStore();
+const selfUserId = computed(() => userStore.value.user?.userId);
+
+const uiStore = useUIStore();
+const chatId = computed(() => uiStore.value.activeChat?.chatId);
+
+const formattedMessages = ref<ChatMessageBubbleProps[]>([]);
 
 watchEffect(async () => {
-  const { data: messages } = await backendAxios.get<DirectChatMessage[]>(
-    `/api/directChatMessages?
-      betweenUserIds=${props.participantIds.join(',')}
+  const { data: othersMembershipList } = await backendAxios.get<ChatMembership[]>(
+    `/api/chatMemberships?
+      chatIds=${chatId.value}
+      &excludeUserIds=${selfUserId.value}
     `.replace(/\s/g, '')
   );
-  messageList.value = messages;
+  const othersUserIdList = othersMembershipList.map(membership => membership.userId);
+  const { data: othersUserList } = await backendAxios.get<
+    Pick<User, 'userId' | 'name'>[]
+  >(
+    `/api/users?
+      fields=userId,name
+      &userIds=${othersUserIdList}
+    `.replace(/\s/g, '')
+  );
+  formattedMessages.value = props.messages.map(message => {
+    const senderName = othersUserList.find(otherUser => otherUser.userId === message.userId)?.name;
+    const messageContent = message.content;
+    const dtmPosted = message.dtmPosted;
+    return {
+      senderName,
+      messageContent,
+      dtmPosted
+    };
+  });
 });
-
-const userStore = useUserStore();
 
 </script>
 
 <template>
   <div :class="$style.overallContainer">
-    <ChatMessage
-      v-for="message of messageList"
-      :message="message"
-      :type="userStore.user?.userId === message.receiverUserId ? 'received' : 'sent'"
-      :class="[
-        $style.chatMessage,
-        userStore.user?.userId === message.receiverUserId ? $style.isReceived : $style.isSent
-      ]" />
+    <div :class="$style.scrollableContainer">
+      <ChatMessageBubble
+        v-for="{ senderName, messageContent, dtmPosted } of formattedMessages"
+        :sender-name="senderName"
+        :message-content="messageContent"
+        :dtm-posted="dtmPosted"
+        :class="[
+          $style.chatMessage,
+          senderName ? $style.isReceived : $style.isSent
+        ]" />
+    </div>
   </div>
 </template>
 
 <style module>
 .overallContainer {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
   gap: 20px;
   width: 100%;
   height: 100%;
-  padding: 0px 20px;
   overflow-y: scroll;
   padding: 0px clamp(10px, 20%, 300px);
+}
+.scrollableContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: flex-end;
+  gap: 20px;
 }
 .chatMessage {
   position: relative;

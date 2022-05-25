@@ -5,9 +5,11 @@ import CommonSearchBar from '@/components/common/CommonSearchBar.vue';
 import useUserStore from '@/composables/useUserStore';
 import ChatListing from '@/components/chat/ChatListing.vue';
 import backendAxios from '@/globals/configuredAxios';
-import type DirectChatMessage from '@/schemas/DirectChatMessage';
-import type User from '@/schemas/User';
 import useUIStore from '@/composables/useUIStore';
+import type ChatMessage from '@/schemas/ChatMessage';
+import type User from '@/schemas/User';
+import type ChatMembership from '@/schemas/ChatMembership';
+import type Chat from '@/schemas/Chat';
 
 const userStore = useUserStore();
 
@@ -17,58 +19,91 @@ const displayName = computed(() => {
 
 /* Load chats */
 
-const directChatList = ref<{
-  chatId: string;
-  chatName: User['name'];
-  avatarSrc: User['avatarSrc'];
-  lastMessage: DirectChatMessage;
-}[]>([]);
+interface ChatListing {
+  chatId: Chat['chatId'];
+  chatName: string;
+  avatarSrc?: User['avatarSrc'] | Chat['avatarSrc'];
+  latestMessage?: ChatMessage;
+}
+
+const sideBarChatList = ref<ChatListing[]>([]);
 
 (async () => {
-  const { data: directChatMessageList } = await backendAxios.get<DirectChatMessage[]>(
-    `/api/directChatMessages
-      ?involvedUserId=${userStore.value.user!.userId}
+  const selfUserId = userStore.value.user!.userId;
+  const { data: selfMembershipList } = await backendAxios.get<ChatMembership[]>(
+    `/api/chatMemberships?
+      userIds=${selfUserId}
+    `.replace(/\s/g, '')
+  );
+  const chatIdList = selfMembershipList.map(membership => membership.chatId);
+  const { data: chatList } = await backendAxios.get<Chat[]>(
+    `/api/chats?
+      chatIds=${chatIdList.join(',')}
+    `.replace(/\s/g, '')
+  );
+  const { data: latestMessageList } = await backendAxios.get<ChatMessage[]>(
+    `/api/chatMessages?
+      chatIds=${chatIdList.join(',')}
       &latest=true
     `.replace(/\s/g, '')
   );
-  const directChatPartnerUserIdList = directChatMessageList.map(message => {
-    const currentUserId = userStore.value.user!.userId;
-    return [message.receiverUserId, message.senderUserId].find(id => id !== currentUserId)!;
-  });
-  const { data: directChatPartnerList } = await backendAxios.get<
-    (Partial<User> & Pick<User, 'userId' | 'name' | 'avatarSrc'>)[]
-  >(
-    `/api/users
-      ?userIds=${directChatPartnerUserIdList.join(',')}
-      &fields=userId,name,avatarSrc
+  /* Get info needed to get avatarSrc for direct chats */
+  const { data: othersMembershipList } = await backendAxios.get<ChatMembership[]>(
+    `/api/chatMemberships?
+      chatIds=${chatIdList.join(',')}
+      &excludeUserIds=${selfUserId}
     `.replace(/\s/g, '')
   );
-  directChatList.value = (directChatMessageList.map(message => {
-    const chatId = [message.senderUserId, message.receiverUserId].sort((a, b) => a.localeCompare(b)).join(',');
-    const chatPartner = directChatPartnerList.find(chatPartner => chatPartner.userId === message.receiverUserId || chatPartner.userId === message.senderUserId)!;
-    return {
-      chatId,
-      chatName: chatPartner.name,
-      avatarSrc: chatPartner.avatarSrc,
-      lastMessage: message
-    };
-  }));
+  const othersUserIdList = othersMembershipList.map(membership => membership.userId);
+  const { data: othersUserList } = await backendAxios.get<
+    Pick<User, 'userId' | 'name' | 'avatarSrc'>[]
+  >(
+    `/api/users?
+      fields=userId,name,avatarSrc
+      &userIds=${othersUserIdList}
+    `.replace(/\s/g, '')
+  );
+  sideBarChatList.value = chatList.map(chat => {
+    const chatId = chat.chatId;
+    const latestMessage = latestMessageList.find(message => message.chatId === chat.chatId);
+    switch (chat.type) {
+      case 'group': {
+        if (!chat.name) throw new Error(`Chat of type 'group' does not have a name, which should not be possible!`);
+        return {
+          chatId,
+          chatName: chat.name,
+          avatarSrc: chat.avatarSrc,
+          latestMessage
+        };
+      }
+      case 'direct': {
+        const chatPartnerMembership = othersMembershipList.find(membership => membership.chatId === chat.chatId);
+        const chatPartnerUser = othersUserList.find(user => user.userId === chatPartnerMembership?.userId);
+        if (!chatPartnerUser) throw new Error(`chatPartnerUser should always be found in othersUserList, but wasn't!`);
+        return {
+          chatId,
+          chatName: chatPartnerUser.name,
+          avatarSrc: chatPartnerUser.avatarSrc,
+          latestMessage
+        }
+      }
+    }
+  });
 })();
 
-/* Selecting active chat */
+/* Active chat selection stuff */
 
 const uiStore = useUIStore();
 
 function clickHandlerChatListing(e: MouseEvent, id: string) {
   e.preventDefault();
-  const selectedChat = directChatList.value.find(chatListing => chatListing.chatId === id);
-  if (!selectedChat) throw new Error('No such chat exists with that chatId!');
+  const selectedChat = sideBarChatList.value.find(chatListing => chatListing.chatId === id);
+  if (!selectedChat) throw new Error('selectedChat should always be present in sideBarChatList, but was not found!');
   if (selectedChat.chatId === uiStore.value.activeChat?.chatId) return;
   const activeChat = {
     chatId: selectedChat.chatId,
     chatName: selectedChat.chatName,
-    chatAvatar: selectedChat.avatarSrc,
-    participantIds: [selectedChat.lastMessage.senderUserId, selectedChat.lastMessage.receiverUserId]
+    chatAvatar: selectedChat.avatarSrc
   };
   uiStore.value.setActiveChat(activeChat);
 }
@@ -93,11 +128,11 @@ function clickHandlerChatListing(e: MouseEvent, id: string) {
     </header>
     <div :class="$style.chatListContainer">
       <ChatListing
-        v-for="{ chatId, chatName, lastMessage, avatarSrc } in directChatList"
+        v-for="{ chatId, chatName, latestMessage, avatarSrc } in sideBarChatList"
         :key="chatId"
         :chat-id="chatId"
         :chat-name="chatName"
-        :last-message="lastMessage"
+        :latest-message="latestMessage"
         :avatar-src="avatarSrc"
         @click="clickHandlerChatListing" />
     </div>

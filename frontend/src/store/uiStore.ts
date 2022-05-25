@@ -1,11 +1,10 @@
 
 import type User from '@/schemas/User';
 
-interface Chat {
+interface ActiveChat {
   chatId: string;
   chatName: string;
-  chatAvatar: string | null;
-  participantIds: User['userId'][];
+  chatAvatar?: string;
 }
 
 const uiStore = {
@@ -15,9 +14,9 @@ const uiStore = {
     this.lastPathVisitedBeforeLogin = path;
   },
 
-  activeChat: null as Chat | null,
+  activeChat: null as ActiveChat | null,
 
-  setActiveChat(chat: Chat | null) {
+  setActiveChat(chat: ActiveChat | null) {
     this.activeChat = chat;
   }
 };

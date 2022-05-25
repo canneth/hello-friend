@@ -1,17 +1,31 @@
 <script setup lang="ts">
 
-import { computed } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import TheChatWindowHeader from '@/components/TheChatWindowHeader.vue';
 import TheChatWindowMessageWindow from '@/components/TheChatWindowMessageWindow.vue';
 import TheChatWindowInputBar from '@/components/TheChatWindowInputBar.vue';
 import useUIStore from '@/composables/useUIStore';
+import type ChatMessage from '@/schemas/ChatMessage';
+import backendAxios from '@/globals/configuredAxios';
 
 
 const uiStore = useUIStore();
 
+const chatId = computed(() => uiStore.value.activeChat?.chatId ?? '');
 const chatName = computed(() => uiStore.value.activeChat?.chatName ?? '');
 const chatAvatar = computed(() => uiStore.value.activeChat?.chatAvatar ?? null);
-const participantIdList = computed(() => uiStore.value.activeChat?.participantIds ?? []);
+
+const chatMessages = ref<ChatMessage[]>([]);
+
+watchEffect(async () => {
+  if (!chatId.value) return;
+  const { data: messages } = await backendAxios.get<ChatMessage[]>(
+    `/api/chatMessages?
+      chatIds=${chatId.value}
+    `.replace(/\s/g, '')
+  );
+  chatMessages.value = messages;
+});
 
 </script>
 
@@ -19,7 +33,7 @@ const participantIdList = computed(() => uiStore.value.activeChat?.participantId
   <div :class="$style.overallContainer">
     <div v-if="uiStore.activeChat" :class="$style.chatWindowContainer">
       <TheChatWindowHeader :chat-name="chatName" :chat-avatar="chatAvatar ?? null" />
-      <TheChatWindowMessageWindow :participant-ids="participantIdList" />
+      <TheChatWindowMessageWindow :messages="chatMessages" />
       <TheChatWindowInputBar />
     </div>
     <div v-else="" :class="$style.noActiveChatContainer">
