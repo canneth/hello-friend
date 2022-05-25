@@ -5,6 +5,6 @@ export default interface User {
   handle: string; // UNIQUE
   password: string;
   name: string;
-  avatarSrc: string | null;
+  avatarSrc?: string; // DEFAULT NULL
   dtmCreated?: string; // DEFAULT CURRENT_TIMESTAMP
 }

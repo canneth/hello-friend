@@ -9,7 +9,7 @@ CREATE TABLE "User" (
   "handle" VARCHAR(50) NOT NULL UNIQUE,
   "password" VARCHAR(100) NOT NULL,
   "name" VARCHAR(50) NOT NULL,
-  "avatarSrc" TEXT,
+  "avatarSrc" TEXT DEFAULT NULL,
   "dtmCreated" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 

@@ -6,4 +6,5 @@ export default interface Chat {
   name: string;
   type: ChatType; // DEFAULT 'direct'
   dtmCreated?: string; // DEFAULT CURRENT_TIMESTAMP
+  avatarSrc?: string; // DEFAULT NULL
 }

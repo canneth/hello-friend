@@ -32,7 +32,7 @@ export async function addNewUser(user: Partial<User> & { email: User['email'], p
     handle: user.handle ?? user.email.split('@')[0],
     password: user.password,
     name: user.name ?? user.email.split('@')[0],
-    avatarSrc: user.avatarSrc ?? null
+    avatarSrc: user.avatarSrc
   }
   await knexClient<User>('User').insert(userToAdd);
 }
