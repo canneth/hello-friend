@@ -1,7 +1,7 @@
 
 import { v4 as uuid } from 'uuid';
 import knexClient from '@src/database/client';
-import User from '@root/src/database/schemas/User';
+import User from '@src/database/schemas/User';
 
 
 export async function getUserById(userId: User['userId']) {

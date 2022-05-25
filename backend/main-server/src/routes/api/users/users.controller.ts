@@ -1,6 +1,6 @@
 
 import { RequestHandler } from 'express';
-import User from '@root/src/database/schemas/User';
+import User from '@src/database/schemas/User';
 import { getAllMatchingUsers, getUserById } from './users.service';
 import { censorUser } from './users.utils';
 

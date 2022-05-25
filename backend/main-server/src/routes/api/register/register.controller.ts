@@ -2,7 +2,7 @@
 import { RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import { addNewUser, getUserByEmail } from '@src/routes/api/users/users.service';
-import User from '@root/src/database/schemas/User';
+import User from '@src/database/schemas/User';
 
 export const registerController: RequestHandler<
   {},
