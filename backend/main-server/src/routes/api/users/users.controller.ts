@@ -5,10 +5,10 @@ import { getAllMatchingUsers, getUserById } from './users.service';
 import { censorUser } from './users.utils';
 
 export const getUserController: RequestHandler<
-  { userId?: User['userId'] }
+  { userId?: string }
 > = async (req, res) => {
 
-  const idOfUserToGet = req.params.userId;
+  const idOfUserToGet: User['userId'] | undefined = req.params.userId;
 
   if (!idOfUserToGet) return res.status(400).send(`Request body is missing a userId property!`);
 
@@ -33,8 +33,8 @@ export const getAllMatchingUsersController: RequestHandler<
   }
 > = async (req, res) => {
 
-  const userIds = req.query.userIds?.split(',') as User['userId'][];
-  const fields = req.query.fields?.split(',') as (keyof User)[];
+  const userIds: User['userId'][] | undefined = req.query.userIds?.split(',');
+  const fields: (keyof User)[] | undefined = req.query.fields?.split(',') as (keyof User)[];
 
   if (!userIds && !fields) return res.status(400).send('No query params provided!');
 

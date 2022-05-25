@@ -9,11 +9,14 @@ import User from '@src/database/schemas/User';
 export const loginController: RequestHandler<
   {}, // Params dictionary
   {}, // Res body
-  { email?: User['email']; password?: User['password'] } // Req body
+  {
+    email?: string;
+    password?: string;
+  } // Req body
 > = async (req, res) => {
 
-  const email = req.body.email;
-  const password = req.body.password;
+  const email: User['email'] | undefined = req.body.email;
+  const password: User['password'] | undefined = req.body.password;
 
   if (!email) return res.status(400).send(`Request body is missing an email property!`);
   if (!password) return res.status(400).send('Request body is missing a password property!');
@@ -44,10 +47,10 @@ export const logoutController: RequestHandler = (req, res) => {
 export const verifyController: RequestHandler<
   {},
   {},
-  { userId?: User['userId'] }
+  { userId?: string }
 > = (req, res) => {
 
-  const claimedUserId = req.body.userId;
+  const claimedUserId: User['userId'] | undefined = req.body.userId;
   const loggedInUserId = req.loggedInUserId;
 
   if (!claimedUserId) return res.status(400).send('Request body is missing a userId property!');

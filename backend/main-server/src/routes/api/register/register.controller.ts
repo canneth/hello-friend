@@ -7,11 +7,14 @@ import User from '@root/src/database/schemas/User';
 export const registerController: RequestHandler<
   {},
   {},
-  { email?: User['email']; password?: User['password'] }
+  {
+    email?: string;
+    password?: string;
+  }
 > = async (req, res) => {
 
-  const email = req.body.email;
-  const password = req.body.password;
+  const email: User['email'] | undefined = req.body.email;
+  const password: User['password'] | undefined = req.body.password;
 
   if (!email) return res.status(400).send(`Request body is missing an email property!`);
   if (!password) return res.status(400).send('Request body is missing a password property!');
