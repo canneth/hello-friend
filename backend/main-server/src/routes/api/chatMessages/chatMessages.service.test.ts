@@ -1,11 +1,12 @@
 
+import { v4 as uuid } from 'uuid';
 import ChatMessage from '@src/database/schemas/ChatMessage';
 import Chat from '@src/database/schemas/Chat';
 import User from '@src/database/schemas/User';
 import emptyDatabase from '@src/database/utils/emptyDatabase';
 import knexClient from '@src/database/client';
 import ChatMembership from '@src/database/schemas/ChatMembership';
-import { getChatMessagesInChat } from './chatMessages.service';
+import { getAllChatMessagesInChats, getChatMessagesInChat } from './chatMessages.service';
 
 beforeAll(async () => {
   await emptyDatabase();
@@ -298,6 +299,330 @@ describe('getChatMessagesInChat(chatId, latest?)', () => {
       await knexClient<User>('User').delete();
 
       /* Test */
+      expect(chatMessages).toEqual([]);
+    });
+  });
+});
+
+describe('getAllChatMessagesInChats(chatIds, latest?)', () => {
+  describe('if latest is undefined', () => {
+    it('returns all chat messages in chats corresponding to all listed chatIds', async () => {
+      /* Setup */
+      const testUser: User = {
+        userId: uuid(),
+        email: 'testUser@email.com',
+        handle: 'testUser',
+        password: 'testUser-password',
+        name: 'testUser-name',
+        avatarSrc: 'testUser-avatarSrc'
+      };
+
+      const testChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `testChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+      const unrelatedChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `unrelatedChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+
+      const testChatMemberships: ChatMembership[] = (
+        Array(testChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: testChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+      const unrelatedChatMemberships: ChatMembership[] = (
+        Array(unrelatedChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+
+      const testChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          testChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: testChats[i].chatId,
+            content: `I am testChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      const unrelatedChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          unrelatedChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            content: `I am unrelatedChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      await knexClient<User>('User').insert(testUser);
+      await knexClient<Chat>('Chat').insert([...testChats, ...unrelatedChats]);
+      await knexClient<ChatMembership>('ChatMembership').insert([...testChatMemberships, ...unrelatedChatMemberships]);
+      await knexClient<ChatMessage>('ChatMessage').insert([...testChatMessages, ...unrelatedChatMessages]);
+
+      /* Execute */
+      const chatIds = testChats.map(chat => chat.chatId);
+      const chatMessages = await getAllChatMessagesInChats(chatIds);
+
+      /* Cleanup */
+      await knexClient<ChatMessage>('ChatMessage').delete();
+      await knexClient<ChatMembership>('ChatMembership').delete();
+      await knexClient<Chat>('Chat').delete();
+      await knexClient<User>('User').delete();
+
+      /* Test */
+      chatMessages.forEach(record => delete record.dtmPosted);
+      const comparator = (a: ChatMessage, b: ChatMessage) => a.chatMessageId.localeCompare(b.chatMessageId);
+      const sortedResult = chatMessages.sort(comparator);
+      const sortedExpected = testChatMessages.sort(comparator);
+      expect(sortedResult).toEqual(sortedExpected);
+    });
+    it('returns [] if all of the corresponding chats have no messages', async () => {
+      /* Setup */
+      const testUser: User = {
+        userId: uuid(),
+        email: 'testUser@email.com',
+        handle: 'testUser',
+        password: 'testUser-password',
+        name: 'testUser-name',
+        avatarSrc: 'testUser-avatarSrc'
+      };
+
+      const testChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `testChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+      const unrelatedChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `unrelatedChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+
+      const unrelatedChatMemberships: ChatMembership[] = (
+        Array(unrelatedChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+
+      const unrelatedChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          unrelatedChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            content: `I am unrelatedChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      await knexClient<User>('User').insert(testUser);
+      await knexClient<Chat>('Chat').insert([...testChats, ...unrelatedChats]);
+      await knexClient<ChatMembership>('ChatMembership').insert(unrelatedChatMemberships);
+      await knexClient<ChatMessage>('ChatMessage').insert(unrelatedChatMessages);
+
+      /* Execute */
+      const chatIds = testChats.map(chat => chat.chatId);
+      const chatMessages = await getAllChatMessagesInChats(chatIds);
+
+      /* Cleanup */
+      await knexClient<ChatMessage>('ChatMessage').delete();
+      await knexClient<ChatMembership>('ChatMembership').delete();
+      await knexClient<Chat>('Chat').delete();
+      await knexClient<User>('User').delete();
+
+      /* Test */
+      expect(chatMessages).toEqual([]);
+    });
+  });
+  describe('if latest is defined', () => {
+    it('returns all latest chat messages in each of the chats corresponding to all listed chatIds', async () => {
+      /* Setup */
+      const testUser: User = {
+        userId: uuid(),
+        email: 'testUser@email.com',
+        handle: 'testUser',
+        password: 'testUser-password',
+        name: 'testUser-name',
+        avatarSrc: 'testUser-avatarSrc'
+      };
+
+      const testChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `testChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+      const unrelatedChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `unrelatedChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+
+      const testChatMemberships: ChatMembership[] = (
+        Array(testChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: testChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+      const unrelatedChatMemberships: ChatMembership[] = (
+        Array(unrelatedChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+
+      const testChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          testChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: testChats[i].chatId,
+            content: `I am testChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      const unrelatedChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          unrelatedChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            content: `I am unrelatedChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      await knexClient<User>('User').insert(testUser);
+      await knexClient<Chat>('Chat').insert([...testChats, ...unrelatedChats]);
+      await knexClient<ChatMembership>('ChatMembership').insert([...testChatMemberships, ...unrelatedChatMemberships]);
+      for (const message of [...testChatMessages, ...unrelatedChatMessages]) {
+        await knexClient<ChatMessage>('ChatMessage').insert(message);
+        await knexClient.raw('SELECT pg_sleep(0.001)');
+      }
+
+      /* Execute */
+      const chatIds = testChats.map(chat => chat.chatId);
+      const chatMessages = await getAllChatMessagesInChats(chatIds, true);
+
+      /* Cleanup */
+      await knexClient<ChatMessage>('ChatMessage').delete();
+      await knexClient<ChatMembership>('ChatMembership').delete();
+      await knexClient<Chat>('Chat').delete();
+      await knexClient<User>('User').delete();
+
+      /* Test */
+      chatMessages.forEach(record => delete record.dtmPosted);
+      const comparator = (a: ChatMessage, b: ChatMessage) => a.chatMessageId.localeCompare(b.chatMessageId);
+      const sortedResult = chatMessages.sort(comparator);
+      const sortedExpected = [testChatMessages[2], testChatMessages[5]].sort(comparator);
+      expect(sortedResult).toEqual(sortedExpected);
+    });
+    it('returns [] if all of the corresponding chats have no messages', async () => {
+      /* Setup */
+      const testUser: User = {
+        userId: uuid(),
+        email: 'testUser@email.com',
+        handle: 'testUser',
+        password: 'testUser-password',
+        name: 'testUser-name',
+        avatarSrc: 'testUser-avatarSrc'
+      };
+
+      const testChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `testChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+      const unrelatedChats: Chat[] = (
+        Array(2).fill(null)
+          .map((_, i) => ({
+            chatId: uuid(),
+            name: `unrelatedChats[${i}]`,
+            type: 'direct'
+          }))
+      );
+
+      const unrelatedChatMemberships: ChatMembership[] = (
+        Array(unrelatedChats.length).fill(null)
+          .map((_, i) => ({
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            chatMembershipId: uuid()
+          }))
+      );
+
+      const unrelatedChatMessages: ChatMessage[] = [];
+      for (let i = 0; i < testChats.length; i++) {
+        for (let j = 0; j < 3; j++) {
+          unrelatedChatMessages.push({
+            chatMessageId: uuid(),
+            userId: testUser.userId,
+            chatId: unrelatedChats[i].chatId,
+            content: `I am unrelatedChatMessage #${j} in chat #${i}!`
+          });
+        }
+      }
+      await knexClient<User>('User').insert(testUser);
+      await knexClient<Chat>('Chat').insert([...testChats, ...unrelatedChats]);
+      await knexClient<ChatMembership>('ChatMembership').insert(unrelatedChatMemberships);
+      for (const message of unrelatedChatMessages) {
+        await knexClient<ChatMessage>('ChatMessage').insert(message);
+        await knexClient.raw('SELECT pg_sleep(0.001)');
+      }
+
+      /* Execute */
+      const chatIds = testChats.map(chat => chat.chatId);
+      const chatMessages = await getAllChatMessagesInChats(chatIds, true);
+
+      /* Cleanup */
+      await knexClient<ChatMessage>('ChatMessage').delete();
+      await knexClient<ChatMembership>('ChatMembership').delete();
+      await knexClient<Chat>('Chat').delete();
+      await knexClient<User>('User').delete();
+
+      /* Test */
+      chatMessages.forEach(record => delete record.dtmPosted);
       expect(chatMessages).toEqual([]);
     });
   });
