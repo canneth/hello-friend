@@ -1,8 +1,8 @@
 
 import knexClient from '@src/database/client';
 import User from '@src/database/schemas/User';
-import ChatMembership from '@root/src/database/schemas/ChatMembership';
-import Chat from '@root/src/database/schemas/Chat';
+import ChatMembership from '@src/database/schemas/ChatMembership';
+import Chat from '@src/database/schemas/Chat';
 import ChatMessage from '@src/database/schemas/ChatMessage';
 import ContactListing from '@src/database/schemas/ContactListing';
 

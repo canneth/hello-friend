@@ -1,5 +1,5 @@
 
-import type User from '@root/src/database/schemas/User';
+import type User from '@src/database/schemas/User';
 
 export default interface ContactListing {
   // PRIMARY KEY (ownerUserId, contactUserId)

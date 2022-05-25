@@ -1,6 +1,6 @@
 
-import type User from '@root/src/database/schemas/User';
-import Chat from '@root/src/database/schemas/Chat';
+import type User from '@src/database/schemas/User';
+import Chat from '@src/database/schemas/Chat';
 
 export default interface ChatMembership {
   // PRIMARY KEY (userId, chatId)
