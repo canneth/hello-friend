@@ -7,7 +7,7 @@ CREATE TYPE chatType AS ENUM ('direct', 'group');
 
 CREATE TABLE "Chat" (
   "chatId" UUID NOT NULL PRIMARY KEY,
-  "name" VARCHAR(50),
+  "name" VARCHAR(50) DEFAULT NULL,
   "type" chatType NOT NULL DEFAULT 'direct',
   "dtmCreated" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   "avatarSrc" TEXT DEFAULT NULL
