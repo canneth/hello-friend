@@ -2,7 +2,7 @@
 
 const props = defineProps<{
   displayName: string;
-  avatarSrc: string | null;
+  avatarSrc?: string;
 }>()
 
 </script>
