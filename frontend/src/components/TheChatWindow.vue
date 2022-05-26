@@ -34,7 +34,7 @@ watchEffect(async () => {
     <div v-if="uiStore.activeChat" :class="$style.chatWindowContainer">
       <TheChatWindowHeader :chat-name="chatName" :chat-avatar="chatAvatar ?? null" />
       <TheChatWindowMessageWindow :messages="chatMessages" />
-      <TheChatWindowInputBar />
+      <TheChatWindowInputBar :class="$style.inputBar" />
     </div>
     <div v-else="" :class="$style.noActiveChatContainer">
       <p>Select a chat and get chatting!</p>
@@ -56,6 +56,12 @@ watchEffect(async () => {
   align-items: center;
   width: 100%;
   height: 100%;
+}
+.inputBar {
+  position: relative;
+  padding: 0px clamp(10px, 20%, 300px);
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 .noActiveChatContainer {
