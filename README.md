@@ -2,10 +2,11 @@
   <h1>
     <div display='flex' align-items='center'>
       HelloFriend!
-      <img src='' />
+      <img src='https://user-images.githubusercontent.com/23531034/170530534-d260bf11-476e-400d-a57a-e72b2dc675b5.png' />
     </div>
   </h1>
 </div>
+
 
 <p align='center'>
   A simple chat app.
