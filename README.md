@@ -22,7 +22,7 @@
     This is primarily learning project where I take my first stabs at Vue 3 and designing for WebSockets.
     <br />
     <br />
-    This project is a work-in-progress, and will probably be so for a very long time!
+    This project is a work-in-progress (and will probably be so for a very long time)!
   </p>
 </section>
 
