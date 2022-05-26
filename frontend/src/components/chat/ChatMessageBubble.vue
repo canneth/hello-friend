@@ -41,7 +41,7 @@ const formattedTimestamp = computed(() => (
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  padding: 16px 20px;
+  padding: 12px 10px;
   overflow: clip;
   width: max(200px, 80%);
   flex-shrink: 0;
