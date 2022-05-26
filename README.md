@@ -32,12 +32,19 @@
   <ul>
     <li>Figma</li>
   </ul>
-  <h3>Implementation</h3>
+  <h3>Frontend</h3>
   <ul>
     <li>TypeScript</li>
     <li>Vue 3</li>
     <li>MobX</li>
+  </ul>
+  <h3>Backend</h3>
+  <ul>
+    <li>TypeScript</li>
+    <li>Express</li>
+    <li>ws</li>
     <li>Knex</li>
+    <li>PostgreSQL</li>
   </ul>
   <h3>Testing</h3>
   <ul>
