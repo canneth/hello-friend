@@ -13,16 +13,16 @@ It consists of a main server and a WebSocket server.
 The main server queries and manipulates the database in response to calls to its exposed API routes.
 
 Its main responsibilities are to:
-1) Serve information required by the frontend on request to exposed API routes
-2) Interface directly with the database
-3) Handle user authentication and authorization
-4) Send events to the WebSocket server immediately after relevant database manipulations (eg. when a new message is POSTed)
+* Serve information required by the frontend on request to exposed API routes
+* Interface directly with the database
+* Handle user authentication and authorization
+* Send events to the WebSocket server immediately after relevant database manipulations (eg. when a new message is POSTed)
 
 ### The Web Socket Server
 
 The WebSocket server listens to events coming from .
 
 Its main responsibilities are to:
-1) Listen to events from the main server
-2) Control broadcast traffic
-3) Act as a forwarder for events sent from the main server to active clients
+* Listen to events from the main server
+* Control broadcast traffic
+* Act as a forwarder for events sent from the main server to active clients
