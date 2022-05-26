@@ -20,7 +20,7 @@ Its main responsibilities are to:
 
 ### The Web Socket Server
 
-The WebSocket server listens to events coming from .
+The WebSocket server listens to events coming from the main server, and basically forwards it to the relevant frontend clients.
 
 Its main responsibilities are to:
 * Listen to events from the main server
