@@ -1,11 +1,12 @@
 <div align='center'>
   <h1>
     <div display='flex' align-items='center'>
+      <img src='https://user-images.githubusercontent.com/23531034/170530534-d260bf11-476e-400d-a57a-e72b2dc675b5.png' />
       HelloFriend!
-      <img src='' />
     </div>
   </h1>
 </div>
+
 
 <p align='center'>
   A simple chat app.
@@ -21,7 +22,7 @@
     This is primarily learning project where I take my first stabs at Vue 3 and designing for WebSockets.
     <br />
     <br />
-    This project is a work-in-progress, and will probably be so for a very long time!
+    This project is a work-in-progress (and will probably be so for a very long time)!
   </p>
 </section>
 
@@ -31,12 +32,19 @@
   <ul>
     <li>Figma</li>
   </ul>
-  <h3>Implementation</h3>
+  <h3>Frontend</h3>
   <ul>
     <li>TypeScript</li>
     <li>Vue 3</li>
     <li>MobX</li>
+  </ul>
+  <h3>Backend</h3>
+  <ul>
+    <li>TypeScript</li>
+    <li>Express</li>
+    <li>ws</li>
     <li>Knex</li>
+    <li>PostgreSQL</li>
   </ul>
   <h3>Testing</h3>
   <ul>
